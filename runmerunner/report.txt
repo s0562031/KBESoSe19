@@ -1,0 +1,12 @@
+Methodenname: findMe2
+Modifizierer: public
+Returntype: void
+Methodenname: findMe4
+Modifizierer: public
+Returntype: void
+Methodenname: findMe3
+Modifizierer: public
+Returntype: void
+Methodenname: findMe1
+Modifizierer: public
+Returntype: void
