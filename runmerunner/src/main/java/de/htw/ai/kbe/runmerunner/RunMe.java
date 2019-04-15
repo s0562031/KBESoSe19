@@ -6,7 +6,11 @@ import java.lang.annotation.Target;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 
-
+/**
+ * Annotation RunMe for testing.
+ * @author Dustin
+ *
+ */
 @Retention(RetentionPolicy.RUNTIME) // zur Laufzeit
 @Target(ElementType.METHOD)			// nur fuer Methoden
 @Documented

@@ -1,7 +1,8 @@
 package de.htw.ai.kbe.runmerunner;
 
 /**
- * Hello world!
+ * Annotated Class to be found with Runner.
+ * @author Dustin
  *
  */
 public class App 
@@ -27,8 +28,9 @@ public class App
     	
     }
     
+    // private, daher nicht invokierbar
     @RunMe
-    public void findMe3() {
+    private void findMe3(String test) {
     	
     }
     
@@ -37,7 +39,4 @@ public class App
     	
     }
     
-    // nicht invokierbare Methoden mit @RunMe
-    
-    //TODO: 
 }
