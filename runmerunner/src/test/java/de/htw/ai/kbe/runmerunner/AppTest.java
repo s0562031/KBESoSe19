@@ -269,7 +269,7 @@ public class AppTest {
 		args[0] = "-c";
 		args[1] = "de.htw.ai.kbe.runmerunner.App";
 		args[2] = "-o";
-		args[3] = "";
+		args[3] = "report.txt";
 		
 		Runner.main(args);
 		
