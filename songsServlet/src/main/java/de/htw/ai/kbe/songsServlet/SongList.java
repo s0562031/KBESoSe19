@@ -1,11 +1,9 @@
-package songsServlet;
+package de.htw.ai.kbe.songsServlet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
-
-import songsServlet.Songs;
 
 public class SongList {
 	
@@ -17,6 +15,12 @@ public class SongList {
  
     public SongList(List<Songs> songs) {
         this.songs = songs;
+    }
+    
+    public Songs getSongById(int id) {
+    	
+    	//TODO
+    	return null;
     }
  
     @XmlAnyElement(lax=true)

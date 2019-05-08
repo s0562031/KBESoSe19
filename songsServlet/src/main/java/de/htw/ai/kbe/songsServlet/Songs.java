@@ -1,4 +1,4 @@
-package songsServlet;
+package de.htw.ai.kbe.songsServlet;
 
 public class Songs {
 	
