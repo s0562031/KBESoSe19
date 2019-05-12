@@ -1,6 +1,12 @@
 package de.htw.ai.kbe.songsServlet;
 
 import java.io.BufferedInputStream;
+import org.json.simple.JSONObject;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -29,20 +35,72 @@ import org.apache.commons.io.IOUtils;
  *deploy: clean install tomcat7:deploy
  */
 
-
-
+/**
+ * 
+ * @author dustin
+ *
+ */
 public class App extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private String songsxmlfile = null;
-	private List<Songs> songList = null;
+	private static String songsxmlfile = null;
+	private static List<Songs> songList = null;
+	
+	public static void main(String[] args) {
+		
+		/*
+		songsxmlfile = "/var/tmp/songs.xml";
+		
+		try {
+			loadSongs(songsxmlfile);
+		} catch (JAXBException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		songList.forEach(s -> {
+			System.out.println(s.getTitle());
+		});
+
+		*/
+		
+		try {
+            List<Songs> readSongs = readXMLToSongs("/var/tmp/songs.xml");
+            readSongs.forEach(s -> {
+                System.out.println(s.getTitle());
+            });
+        } catch (Exception e) { // Was stimmt hier nicht?
+            e.printStackTrace();  
+        }
+        
+	}
 	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 	    
 		// path declared in web.xml ??
 		this.songsxmlfile = servletConfig.getInitParameter("songsxml");
-		loadSongs(songsxmlfile);
+		System.out.println(songsxmlfile);
+		
+		try {
+			loadSongs(songsxmlfile);
+		} catch (JAXBException | IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
+			songList = readXMLToSongs("songs.xml");
+			
+		} catch(Exception e) { //TODO: define
+			e.printStackTrace();
+		}
+		
+		songList.forEach(s -> {
+			System.out.println(s.getTitle());
+		});
+
 	}
 	
 	
@@ -51,31 +109,33 @@ public class App extends HttpServlet {
 		
 		// alle Parameter (keys)
 		Enumeration<String> paramNames = request.getParameterNames();
+		System.out.println(paramNames.toString());
 	
 		// check if any param exists, more than songId..
 		// check f Accept-Header exists
 		
 		
 		// get Id from params
-		String responseStr = "this is your response";
-		String id = request.getParameter("songId");
+		int id = Integer.parseInt(request.getParameter("songId"));
 		
-		String param = "";
-
-		while (paramNames.hasMoreElements()) {
-			param = paramNames.nextElement();
-			responseStr = responseStr + param + "=" 
-			+ request.getParameter(param) + "\n";
-		}
+		// get searchedSong
+		Songs searchedSong = songList.get(id);
 		
+		//map searchedSong to JSON
+		
+		String songJSONObj = songToJSON(searchedSong);
+		
+		System.out.println(songJSONObj);
 
-		response.setContentType("text/plain");		
+		
+		response.setContentType("application/json");		
+		response.setCharacterEncoding("UTF-8");
 		try (PrintWriter out = response.getWriter()) {
-			responseStr += "\n repsonse " + responseStr;
-			out.println(responseStr);
+			out.println(songJSONObj);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		
 	}
 	
@@ -91,22 +151,9 @@ public class App extends HttpServlet {
 //		}
 	}
 	
-	protected void loadSongs(String songsxmlfile) {
+	protected static void loadSongs(String songsxmlfile) throws FileNotFoundException, JAXBException, IOException {
 		
-		 try {
-	            List<Songs> readSongs = readXMLToSongs(songsxmlfile);
-	            readSongs.forEach(s -> {
-	                System.out.println(s.getTitle());
-	            });
-	        } catch (NullPointerException e) {
-	            e.printStackTrace();  
-	        } catch (FileNotFoundException e) {
-	        	e.printStackTrace();
-	        } catch (IOException e) {
-	        	e.printStackTrace();
-	        } catch (JAXBException e) {
-	        	e.printStackTrace();
-	        }
+	          songList = readXMLToSongs(songsxmlfile);
 	}
 	
     private static List<Songs> readXMLToSongs(String filename) throws JAXBException, FileNotFoundException, IOException {
@@ -125,6 +172,14 @@ public class App extends HttpServlet {
     	StreamSource xml = new StreamSource(xmlLocation);
         SongList wrapper = (SongList) unmarshaller.unmarshal(xml, SongList.class).getValue();
         return wrapper.getSongs();
+    }
+    
+    private static String songToJSON(Songs searchedSong) throws JsonProcessingException {
+    	
+    	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    	
+    	String json = mapper.writeValueAsString(searchedSong);
+    	return json;
     }
 
 }

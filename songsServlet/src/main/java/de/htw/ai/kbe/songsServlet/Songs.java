@@ -1,18 +1,34 @@
 package de.htw.ai.kbe.songsServlet;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement(name="song")
 public class Songs {
 	
+	private Integer id;
 	private String title;
 	private String artist;
 	private String album;
-	private int release;
+	private int released;
 	
-	public Songs(String title, String artist, String album, int release) {
-		super();
+	public Songs() {
+		
+	}
+	
+	public Songs(Integer id, String title, String artist, String album, int released) {
+		this.id = id;
 		this.title = title;
 		this.artist = artist;
 		this.album = album;
-		this.release = release;
+		this.released = released;
+	}
+	
+	public Integer getId() {
+		return id;
+	}
+	
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 	public String getTitle() {
@@ -33,11 +49,11 @@ public class Songs {
 	public void setAlbum(String album) {
 		this.album = album;
 	}
-	public int getRelease() {
-		return release;
+	public int getReleased() {
+		return released;
 	}
-	public void setRelease(int release) {
-		this.release = release;
+	public void setReleased(int released) {
+		this.released = released;
 	}
 	
 }
