@@ -6,16 +6,20 @@ import org.json.simple.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
@@ -45,6 +49,8 @@ public class App extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String songsxmlfile = null;
 	private static List<Songs> songList = null;
+	private int currentSongId;
+	private int nextSongId;
 	
 	public static void main(String[] args) {
 		
@@ -65,7 +71,7 @@ public class App extends HttpServlet {
 
 		*/
 		
-		try {
+		/*try {
             List<Songs> readSongs = readXMLToSongs("/var/tmp/songs.xml");
             readSongs.forEach(s -> {
                 System.out.println(s.getTitle());
@@ -73,96 +79,172 @@ public class App extends HttpServlet {
         } catch (Exception e) { // Was stimmt hier nicht?
             e.printStackTrace();  
         }
-        
+        */
 	}
 	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 	    
 		// path declared in web.xml ??
-		this.songsxmlfile = servletConfig.getInitParameter("songsxml");
-		System.out.println(songsxmlfile);
-		
+		songsxmlfile = servletConfig.getInitParameter("songsxml");
+				
 		try {
-			loadSongs(songsxmlfile);
-		} catch (JAXBException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		try {
-			songList = readXMLToSongs("songs.xml");
 			
-		} catch(Exception e) { //TODO: define
+			loadSongs(songsxmlfile);
+			this.currentSongId = songList.size();
+			this.nextSongId = this.currentSongId+1;
+			
+		} catch (JAXBException | IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
-		
-		songList.forEach(s -> {
-			System.out.println(s.getTitle());
-		});
-
 	}
-	
-	
+		
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
+		String contentFormat = "application/json";
+		String header = request.getHeader("Accept");
+		
+		if (request.getHeader("Accept") != null){
+            header = request.getHeader("Accept");
+        }
+		
+		/* HEADER ist irgendwas anderes 
+		if (header != null && header != "application/json") {
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Header wird nicht akzeptiert");
+			return;
+        }*/
+		
+		/* just for testing
+		 response.setContentType("text/plain");
+		 
+
+        try (PrintWriter te = response.getWriter()) {
+            te.println(songList.size());
+            te.println(header);
+            te.close();
+        } */ 
+		
+		
 		// alle Parameter (keys)
 		Enumeration<String> paramNames = request.getParameterNames();
-		System.out.println(paramNames.toString());
-	
-		// check if any param exists, more than songId..
-		// check f Accept-Header exists
 		
-		
-		// get Id from params
-		int id = Integer.parseInt(request.getParameter("songId"));
-		
-		// get searchedSong
-		Songs searchedSong = songList.get(id);
-		
-		//map searchedSong to JSON
-		
-		String songJSONObj = songToJSON(searchedSong);
-		
-		System.out.println(songJSONObj);
-
-		
-		response.setContentType("application/json");		
-		response.setCharacterEncoding("UTF-8");
-		try (PrintWriter out = response.getWriter()) {
-			out.println(songJSONObj);
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (!paramNames.hasMoreElements()) {
+			
+			String allSongs = pojoToJSON(songList);			
+			outputText(response, allSongs, contentFormat, "ok");
+			
+			return;
+			
+		} else {
+			
+			String param = paramNames.nextElement();
+			
+			if (songList == null){			
+				response.sendError(HttpServletResponse.SC_NO_CONTENT, "Keine Daten vorhanden");
+				return;
+			}	
+			
+			switch (param) {
+				
+				case "songId": {
+					
+					try {
+						 int id = Integer.parseInt(request.getParameter("songId")); // get Id from params				
+					
+						 Songs searchedSong = findSongById(songList, id); // get searchedSong	
+						 
+						 if(searchedSong == null) {
+							 
+							 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Kein Song zu dieser songId");
+							 return;
+							 
+						 } else {
+							 
+							 String song = pojoToJSON(searchedSong); //map searchedSong to JSON						
+							 outputText(response, song, contentFormat, "ok");
+						 }
+						 
+					} catch (NumberFormatException e) {				
+						response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parameter ist keine Zahl");
+					}
+					
+					return;
+				}
+				
+				default: {
+					
+					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Parameter nicht erlaubt. Bitte songId angeben.");
+					return;
+				}			
+			}		
 		}
-		
-		
 	}
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-//		response.setContentType("text/plain");
-//		ServletInputStream inputStream = request.getInputStream();
-//		byte[] inBytes = IOUtils.toByteArray(inputStream);
-//		
-//		try (PrintWriter out = response.getWriter()) {
-//			out.println(new String(inBytes));
-//		}
-	}
-	
-	protected static void loadSongs(String songsxmlfile) throws FileNotFoundException, JAXBException, IOException {
+		String reqFormat = request.getContentType();
 		
-	          songList = readXMLToSongs(songsxmlfile);
+		if("application/json".contentEquals(reqFormat)) {
+			
+			Songs song = new Songs();
+			getSong(request.getInputStream());
+			
+			synchronized (this) {
+	            addSongToSongList(song);
+	            outputText(response, "song mit id " + this.currentSongId + " erstellt.", "text/plain", "created");
+	        }
+			
+		 } else {
+			
+			 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "nur application/json als content type erlaubt");
+             return;
+		 }		
 	}
 	
-    private static List<Songs> readXMLToSongs(String filename) throws JAXBException, FileNotFoundException, IOException {
+	private void outputText(HttpServletResponse response, String content, String contentFormat, String status) throws IOException {
+       
+		response.setContentType(contentFormat);        
+        response.setCharacterEncoding("UTF-8");
+        
+        if("created".equals(status)) {
+        	response.setStatus(HttpServletResponse.SC_CREATED);
+        } else {        	
+        	response.setStatus(HttpServletResponse.SC_OK);
+        }
+        
+        try (PrintWriter out = response.getWriter()) {
+            out.println(content);
+            out.close();
+        }
+    }
+	
+	private static Songs findSongById(List<Songs> songs, int id) {
+        for (Songs song : songs) {
+            if (song.getId().equals(id)) {
+                return song;
+            }
+        }
+        return null;
+    }
+	
+	protected static void loadSongs(String songsxmlfile) throws FileNotFoundException, JAXBException, IOException, URISyntaxException {
+		
+	       songList = readXMLToSongs(songsxmlfile);
+	}
+	
+    private static List<Songs> readXMLToSongs(String filename) throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
     	
         JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         
-        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
-            List<Songs> songs = unmarshal(unmarshaller, Songs.class, filename);
+        String fn = App.class.getClassLoader().getResource(filename).toURI().getPath();
+        
+        try (InputStream is = new BufferedInputStream(new FileInputStream(fn))) {
+            List<Songs> songs = unmarshal(unmarshaller, Songs.class, fn);
             return songs;
         }
     }
@@ -174,12 +256,22 @@ public class App extends HttpServlet {
         return wrapper.getSongs();
     }
     
-    private static String songToJSON(Songs searchedSong) throws JsonProcessingException {
+    private static String pojoToJSON(Object obj) throws JsonProcessingException {
     	
     	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
-    	
-    	String json = mapper.writeValueAsString(searchedSong);
-    	return json;
+    	return mapper.writeValueAsString(obj);
     }
-
+    
+    private static Songs getSong(InputStream stream) throws IOException {
+    	
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(stream, Songs.class);
+    }
+    
+    private void addSongToSongList(Songs song) {
+    	
+        song.setId(nextSongId);
+        songList.add(song);       
+        this.nextSongId++;              
+    }
 }

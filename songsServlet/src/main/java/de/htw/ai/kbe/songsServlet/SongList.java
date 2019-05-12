@@ -16,12 +16,6 @@ public class SongList {
     public SongList(List<Songs> songs) {
         this.songs = songs;
     }
-    
-    public Songs getSongById(int id) {
-    	
-    	//TODO
-    	return null;
-    }
  
     @XmlAnyElement(lax=true)
     public List<Songs> getSongs() {

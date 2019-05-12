@@ -12,13 +12,13 @@
                 
         <init-param>   
             <param-name>songsxml</param-name>
-            <param-value>/var/tmp/songs.xml</param-value>
+            <param-value>songs.xml</param-value>
         </init-param>
     </servlet>
   
      <servlet-mapping>
         <servlet-name>songsServlet</servlet-name>
-        <url-pattern>/songs</url-pattern>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
   
 </web-app>
