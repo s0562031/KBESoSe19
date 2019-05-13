@@ -9,15 +9,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +58,6 @@ public class App extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private String songsxmlfile = null;
 	private List<Songs> songList = null;
-	private int currentSongId;
 	private int nextSongId;
 	private ObjectMapper objectmapper;
 	
@@ -68,8 +72,7 @@ public class App extends HttpServlet {
 		try {
 			
 			loadSongs(songsxmlfile);
-			this.currentSongId = songList.size();
-			this.nextSongId = this.currentSongId+1;
+			this.nextSongId = songList.size()+1;
 			
 		} catch (JAXBException | IOException e) {
 			e.printStackTrace();
@@ -94,17 +97,6 @@ public class App extends HttpServlet {
 			return;
         }
         */
-		
-		/* just for testing
-		 response.setContentType("text/plain");
-		 
-
-        try (PrintWriter te = response.getWriter()) {
-            te.println(songList.size());
-            te.println(header);
-            te.close();
-        } */ 
-		
 		
 		// alle Parameter (keys)
 		Enumeration<String> paramNames = request.getParameterNames();
@@ -163,28 +155,22 @@ public class App extends HttpServlet {
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		
+				
 		// addes check for null
 		if(request.getContentType() != null && "application/json".contentEquals(request.getContentType())) {
 			
-			/* Dustins neuer Kram */
-			try {
-				writeNewJSONObjToXML(request);
-			}
-			catch(IOException e) {
-				e.printStackTrace();
-				 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "");
-			}
-			/* */			
-			
-			
-			//Songs song = new Songs();
-			//getSong(request.getInputStream());
-			
 			synchronized (this) {
-	            //addSongToSongList(song);
-	            outputText(response, "song mit id " + this.currentSongId + " erstellt.", "text/plain", "created");
+				try {
+					int currentSongId = nextSongId;
+					writeNewJSONObjToXML(request);
+					
+					response.setHeader("Location", "http://localhost:8080/songsServlet?songId="+currentSongId);
+                    response.setStatus(201);
+				}
+				catch(IOException e) {
+					e.printStackTrace();
+					 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "song konnte nicht geschrieben werden");
+				}	            
 	        }
 			
 		 } else {
@@ -230,10 +216,9 @@ public class App extends HttpServlet {
         JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         
-        //String fn = App.class.getClassLoader().getResource(filename).toURI().getPath();
-        
         try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
             List<Songs> songs = unmarshal(unmarshaller, Songs.class, filename);
+                     
             return songs;
         }
     }
@@ -246,6 +231,12 @@ public class App extends HttpServlet {
     }
     
     private static String pojoToJSON(Object obj) throws JsonProcessingException {
+    	
+    	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    	return mapper.writeValueAsString(obj);
+    }
+    
+    private static String JSONToPojo(Object obj) throws JsonProcessingException {
     	
     	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
     	return mapper.writeValueAsString(obj);
@@ -265,37 +256,34 @@ public class App extends HttpServlet {
 	    Songs newSong = objectmapper.convertValue(jsonMap, new TypeReference<Songs>() {});
 	    
 	    this.addSongToSongList(newSong);
-
-                
-                /*
-                try {
-                    response.setHeader("Location", "http://localhost:8080/songsServlet?songId="+counter);
-                    response.setStatus(201);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                */
-
     }
     
     private void addSongToSongList(Songs song) {
     	
         song.setId(nextSongId);
-        songList.add(song);       
+        songList.add(song);   
+        
+        Collections.sort(songList, new Comparator<Songs>() {
+            @Override
+            public int compare(Songs o1, Songs o2) {
+                return o1.getId() > o2.getId() ? -1 : (o1.getId() < o2.getId()) ? 1 : 0;
+            }
+        });
+                
         this.nextSongId++;              
     }
     
     public List<Songs> getSongList() {
     	return songList;
     }
-    
-    
+     
     @Override
     public void destroy() {
         try {
-            objectmapper.writeValue(new File(songsxmlfile), songList);
-            String data = "testfileinput";
-            File testfile = new File(songsxmlfile, data);
+        	if(songList != null) {
+        		XmlMapper xmlMapper = new XmlMapper();
+        		xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(songsxmlfile), songList);
+        	}       	
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AppTest {
 
-    private App servlet;
+   /* private App servlet;
     private MockServletConfig config;
     private MockHttpServletRequest request;
     private MockHttpServletResponse response;
@@ -101,7 +101,7 @@ public class AppTest {
     	while(testenum.hasMoreElements()) {
     		System.out.println(testenum.nextElement());
     	}
-    	*/
+    	
     	
     	servlet.doGet(request, response);
     	
@@ -123,7 +123,7 @@ public class AppTest {
         assertEquals("application/json", response.getContentType());
     }
     
-    /* TODO */
+    /* TODO 
     /*
     @Test
     public void doGetWithWithXMLInAcceptHeaderReturnsJSON() throws IOException {
@@ -131,7 +131,7 @@ public class AppTest {
         servlet.doGet(request, response);
         assert(response.getStatus() == 406);
     }
-    */
+    
     
     @Test
     public void doGetWithWrongReturns400() throws IOException {
@@ -154,7 +154,7 @@ public class AppTest {
     	//System.out.println(response.getStatus()); //200
     	assert(response.getStatus() == 400);
     }
-    */
+    
     
     @Test
     public void doGetWithWrongParamsReturns400() throws IOException {
@@ -186,7 +186,7 @@ public class AppTest {
     	assert(response.getStatus() == 400);
     }
     
-    /* ID 50 */
+    /* ID 50 
     @Test
     public void postMyNewSongSongShouldGet201() throws IOException {
     	
@@ -216,7 +216,7 @@ public class AppTest {
     	System.out.println(response.getStatus());
     	assert(response.getStatus() == 400);    	
     }
-        
+      */  
 
 }
 
