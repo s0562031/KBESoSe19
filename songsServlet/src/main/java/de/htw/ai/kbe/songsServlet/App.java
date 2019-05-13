@@ -52,36 +52,6 @@ public class App extends HttpServlet {
 	private int currentSongId;
 	private int nextSongId;
 	
-	public static void main(String[] args) {
-		
-		/*
-		songsxmlfile = "/var/tmp/songs.xml";
-		
-		try {
-			loadSongs(songsxmlfile);
-		} catch (JAXBException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		
-		songList.forEach(s -> {
-			System.out.println(s.getTitle());
-		});
-
-		*/
-		
-		/*try {
-            List<Songs> readSongs = readXMLToSongs("/var/tmp/songs.xml");
-            readSongs.forEach(s -> {
-                System.out.println(s.getTitle());
-            });
-        } catch (Exception e) { // Was stimmt hier nicht?
-            e.printStackTrace();  
-        }
-        */
-	}
-	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
 	    
