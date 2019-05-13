@@ -6,6 +6,7 @@ import java.io.File;
 import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -86,11 +88,12 @@ public class App extends HttpServlet {
             header = request.getHeader("Accept");
         }
 		
-		/* HEADER ist irgendwas anderes 
+		/*HEADER ist irgendwas anderes 
 		if (header != null && header != "application/json") {
 			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Header wird nicht akzeptiert");
 			return;
-        }*/
+        }
+        */
 		
 		/* just for testing
 		 response.setContentType("text/plain");
@@ -161,15 +164,26 @@ public class App extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		String reqFormat = request.getContentType();
 		
-		if("application/json".contentEquals(reqFormat)) {
+		// addes check for null
+		if(request.getContentType() != null && "application/json".contentEquals(request.getContentType())) {
 			
-			Songs song = new Songs();
-			getSong(request.getInputStream());
+			/* Dustins neuer Kram */
+			try {
+				writeNewJSONObjToXML(request);
+			}
+			catch(IOException e) {
+				e.printStackTrace();
+				 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "");
+			}
+			/* */			
+			
+			
+			//Songs song = new Songs();
+			//getSong(request.getInputStream());
 			
 			synchronized (this) {
-	            addSongToSongList(song);
+	            //addSongToSongList(song);
 	            outputText(response, "song mit id " + this.currentSongId + " erstellt.", "text/plain", "created");
 	        }
 			
@@ -243,6 +257,27 @@ public class App extends HttpServlet {
         return objectMapper.readValue(stream, Songs.class);
     }
     
+    private void writeNewJSONObjToXML(HttpServletRequest request) throws IOException {
+    	
+		ServletInputStream inputStream = request.getInputStream();
+	    Map<String, Object> jsonMap =  this.objectmapper.readValue(inputStream, new TypeReference<Map<String, Object>>(){});
+	       
+	    Songs newSong = objectmapper.convertValue(jsonMap, new TypeReference<Songs>() {});
+	    
+	    this.addSongToSongList(newSong);
+
+                
+                /*
+                try {
+                    response.setHeader("Location", "http://localhost:8080/songsServlet?songId="+counter);
+                    response.setStatus(201);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                */
+
+    }
+    
     private void addSongToSongList(Songs song) {
     	
         song.setId(nextSongId);
@@ -250,14 +285,21 @@ public class App extends HttpServlet {
         this.nextSongId++;              
     }
     
+    public List<Songs> getSongList() {
+    	return songList;
+    }
+    
     
     @Override
     public void destroy() {
         try {
             objectmapper.writeValue(new File(songsxmlfile), songList);
+            String data = "testfileinput";
+            File testfile = new File(songsxmlfile, data);
         } catch (Exception e) {
             e.printStackTrace();
         }
 	}
 	
 }
+ 
