@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -109,6 +110,13 @@ public class App extends HttpServlet {
 			return;
 			
 		} else {
+			
+			List<String> pnames = new ArrayList<String>(request.getParameterMap().keySet());
+			
+			if(pnames.size() > 1) {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Nur ein Parameter möglich: songId");
+				return;		 
+			}
 			
 			String param = paramNames.nextElement();
 			
@@ -281,8 +289,8 @@ public class App extends HttpServlet {
     public void destroy() {
         try {
         	if(songList != null) {
-        		XmlMapper xmlMapper = new XmlMapper();
-        		xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(songsxmlfile), songList);
+        		//XmlMapper xmlMapper = new XmlMapper();
+        		//xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(songsxmlfile), songList);
         	}       	
         } catch (Exception e) {
             e.printStackTrace();
