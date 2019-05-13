@@ -1,6 +1,8 @@
 package de.htw.ai.kbe.songsServlet;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+
 import org.json.simple.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,13 +49,16 @@ import org.apache.commons.io.IOUtils;
 public class App extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static String songsxmlfile = null;
-	private static List<Songs> songList = null;
+	private String songsxmlfile = null;
+	private List<Songs> songList = null;
 	private int currentSongId;
 	private int nextSongId;
+	private ObjectMapper objectmapper;
 	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
+		
+		objectmapper = new ObjectMapper();
 	    
 		// path declared in web.xml ??
 		songsxmlfile = servletConfig.getInitParameter("songsxml");
@@ -201,9 +206,9 @@ public class App extends HttpServlet {
         return null;
     }
 	
-	protected static void loadSongs(String songsxmlfile) throws FileNotFoundException, JAXBException, IOException, URISyntaxException {
+	protected void loadSongs(String songsxmlfile) throws FileNotFoundException, JAXBException, IOException, URISyntaxException {
 		
-	       songList = readXMLToSongs(songsxmlfile);
+	       this.songList = readXMLToSongs(songsxmlfile);
 	}
 	
     private static List<Songs> readXMLToSongs(String filename) throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
@@ -211,10 +216,10 @@ public class App extends HttpServlet {
         JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         
-        String fn = App.class.getClassLoader().getResource(filename).toURI().getPath();
+        //String fn = App.class.getClassLoader().getResource(filename).toURI().getPath();
         
-        try (InputStream is = new BufferedInputStream(new FileInputStream(fn))) {
-            List<Songs> songs = unmarshal(unmarshaller, Songs.class, fn);
+        try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
+            List<Songs> songs = unmarshal(unmarshaller, Songs.class, filename);
             return songs;
         }
     }
@@ -244,4 +249,15 @@ public class App extends HttpServlet {
         songList.add(song);       
         this.nextSongId++;              
     }
+    
+    
+    @Override
+    public void destroy() {
+        try {
+            objectmapper.writeValue(new File(songsxmlfile), songList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
+	
 }

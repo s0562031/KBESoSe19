@@ -12,7 +12,7 @@
                 
         <init-param>   
             <param-name>songsxml</param-name>
-            <param-value>songs.xml</param-value>
+            <param-value>/var/tmp/songs.xml</param-value>
         </init-param>
     </servlet>
   

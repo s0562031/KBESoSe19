@@ -24,6 +24,7 @@ import java.util.List;
 
 public class AppTest
 {
+	/*
     private App servlet;
     private MockServletConfig config;
     private MockHttpServletRequest request;
@@ -45,6 +46,7 @@ public class AppTest
         servlet.doGet(request, response);
         assertEquals(request.getHeader("Accept"), response.getContentType());
     }
+    */
 
 }
 
