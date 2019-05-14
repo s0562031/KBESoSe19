@@ -183,7 +183,6 @@ public class AppTest {
     	assert(response.getStatus() == 400);
     }
     
-    /* ID 50 
     @Test
     public void postMyNewSongSongShouldGet201() throws IOException {
     	
@@ -192,7 +191,7 @@ public class AppTest {
     	
     	servlet.doPost(request, response);    	
     	assert(response.getStatus() == 201);    	
-    }*/
+    }
     
     @Test
     public void postXMLPayloadReturns400() throws IOException {
