@@ -1,14 +1,22 @@
 package de.htw.ai.kbe.songsServlet;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @XmlRootElement(name="song")
 public class Songs {
 	
+	//@XmlElement()
 	private Integer id;
+	//@XmlElement()
 	private String title;
+	//@XmlElement()
 	private String artist;
+	//@XmlElement()
 	private String album;
+	//@XmlElement()
 	private int released;
 	
 	public Songs() {
@@ -37,6 +45,8 @@ public class Songs {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	@XmlElement(name="artist")
 	public String getArtist() {
 		return artist;
 	}
