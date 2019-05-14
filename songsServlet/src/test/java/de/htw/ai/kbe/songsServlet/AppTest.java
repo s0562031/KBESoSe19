@@ -102,7 +102,6 @@ public class AppTest {
     		System.out.println(testenum.nextElement());
     	}
     	*/
-    	
     	servlet.doGet(request, response);
     	
     	assertFalse(response.getContentAsString().isEmpty());
@@ -117,21 +116,19 @@ public class AppTest {
         assertEquals(request.getHeader("Accept"), response.getContentType());
     }
     
-    @Test
+   /* @Test
     public void doGetWithWOAcceptHeaderReturnsJSON() throws IOException {
         servlet.doGet(request, response);
         assertEquals("application/json", response.getContentType());
-    }
+    }*/
     
-    /* TODO */
-    /*
-    @Test
-    public void doGetWithWithXMLInAcceptHeaderReturnsJSON() throws IOException {
+   /* @Test
+    public void doGetWithXMLInAcceptHeaderReturnsJSON() throws IOException {
     	request.addHeader("Accept", "application/xml");
         servlet.doGet(request, response);
         assert(response.getStatus() == 406);
-    }
-    */
+    } */
+    
     
     @Test
     public void doGetWithWrongReturns400() throws IOException {
@@ -143,18 +140,18 @@ public class AppTest {
     }
     
     /* TODO */
-    /*
+    
     @Test
     public void doGetWithMoreParamsReturns400() throws IOException {
     	request.addParameter("songId", "9");
-    	request.addParameter("songId", "10");
+    	request.addParameter("song", "10");
     	request.addHeader("Accept", "application/json");
     	
     	servlet.doGet(request, response);
     	//System.out.println(response.getStatus()); //200
     	assert(response.getStatus() == 400);
     }
-    */
+    
     
     @Test
     public void doGetWithWrongParamsReturns400() throws IOException {

@@ -88,16 +88,15 @@ public class App extends HttpServlet {
 		String contentFormat = "application/json";
 		String header = request.getHeader("Accept");
 		
-		if (request.getHeader("Accept") != null){
-            header = request.getHeader("Accept");
-        }
-		
-		/*HEADER ist irgendwas anderes 
-		if (header != null && header != "application/json") {
-			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Header wird nicht akzeptiert");
+		/*if (header != "application/json") {
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, header);
 			return;
-        }
-        */
+        }*/
+		
+		if (header == null) {			
+			((HttpServletResponse) request).addHeader("Accept", "application/json");
+			header = request.getHeader("Accept");
+		}
 		
 		// alle Parameter (keys)
 		Enumeration<String> paramNames = request.getParameterNames();
@@ -105,7 +104,7 @@ public class App extends HttpServlet {
 		if (!paramNames.hasMoreElements()) {
 			
 			String allSongs = pojoToJSON(songList);			
-			outputText(response, allSongs, contentFormat, "ok");
+			outputText(response, allSongs, "application/json", "ok");
 			
 			return;
 			
@@ -142,7 +141,7 @@ public class App extends HttpServlet {
 						 } else {
 							 
 							 String song = pojoToJSON(searchedSong); //map searchedSong to JSON						
-							 outputText(response, song, contentFormat, "ok");
+							 outputText(response, song, "application/json", "ok");
 						 }
 						 
 					} catch (NumberFormatException e) {				
