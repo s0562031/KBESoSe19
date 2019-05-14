@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
@@ -61,6 +62,19 @@ public class App extends HttpServlet {
 	private List<Songs> songList = null;
 	private int nextSongId;
 	private ObjectMapper objectmapper;
+	
+	public static void main(String[] args) throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
+		
+		App app = new App();
+		app.test();
+	}
+	
+	public void test() throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
+		
+		loadSongs("songs.xml");
+		this.writeSongListToXML("songs.xml");
+	}
+	
 	
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
@@ -108,7 +122,7 @@ public class App extends HttpServlet {
 		if (!paramNames.hasMoreElements()) {
 			
 			String allSongs = pojoToJSON(songList);			
-			outputText(response, allSongs, contentFormat, "ok");
+			outputText(response, allSongs, "application/json", "ok");
 			
 			return;
 			
@@ -192,7 +206,8 @@ public class App extends HttpServlet {
 	}
 	
 	private void outputText(HttpServletResponse response, String content, String contentFormat, String status) throws IOException {
-        response.setContentType(contentFormat);        
+       
+		response.setContentType(contentFormat);        
         response.setCharacterEncoding("UTF-8");
         
         if("created".equals(status)) {
@@ -231,6 +246,23 @@ public class App extends HttpServlet {
                      
             return songs;
         }
+    }
+    
+    /**
+     * Marshaller
+     * @param filename
+     * @throws JAXBException
+     */
+    private void writeSongListToXML(String filename) throws JAXBException {
+    	
+    	System.out.println("filename:" + filename);
+    	
+    	JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
+    	Marshaller marshall = context.createMarshaller();
+    	
+    	SongList wrapper = new SongList(songList);    	
+    	marshall.marshal(wrapper, new File(filename));
+    	
     }
     
     private static List<Songs> unmarshal(Unmarshaller unmarshaller, Class<Songs> clazz, String xmlLocation) throws JAXBException {

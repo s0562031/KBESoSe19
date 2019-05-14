@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
-@JacksonXmlRootElement(localName = "songs")
+@XmlRootElement(name = "songs")
 public class SongList {
 	
-	@JacksonXmlProperty(localName = "song")
-    @JacksonXmlElementWrapper(useWrapping = false)
+	//@XmlElement(name = "song")
 	private List<Songs> songs;
 	
 
