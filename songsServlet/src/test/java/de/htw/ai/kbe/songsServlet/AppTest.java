@@ -72,11 +72,11 @@ public class AppTest {
     public void getAllSongsGetsYouAllSongs() throws IOException {
     	request.addHeader("Accept", "application/json");
     	
-    	System.out.println(request.getHeader("Accept"));
+    	//System.out.println(request.getHeader("Accept"));
     	
     	servlet.doGet(request, response);
     	
-    	System.out.println(response.getContentLength());
+    	//System.out.println(response.getContentLength());
     	assertFalse(response.getContentAsString().isEmpty());
     	assert(response.getStatus() == 200);
     }
@@ -115,12 +115,12 @@ public class AppTest {
         servlet.doGet(request, response);
         assertEquals(request.getHeader("Accept"), response.getContentType());
     }
-    /*
+    
     @Test
     public void doGetWithWOAcceptHeaderReturnsJSON() throws IOException {
         servlet.doGet(request, response);
         assertEquals("application/json", response.getContentType());
-    }*/
+    }
     
     @Test
     public void doGetWithXMLInAcceptHeaderReturnsJSON() throws IOException {
@@ -183,7 +183,7 @@ public class AppTest {
     	assert(response.getStatus() == 400);
     }
     
-    /* ID 50 
+    /* ID 50 */
     @Test
     public void postMyNewSongSongShouldGet201() throws IOException {
     	
@@ -192,7 +192,7 @@ public class AppTest {
     	
     	servlet.doPost(request, response);    	
     	assert(response.getStatus() == 201);    	
-    }*/
+    }
     
     @Test
     public void postXMLPayloadReturns400() throws IOException {
@@ -210,7 +210,7 @@ public class AppTest {
     	request.setContent(mynewsong.toString().getBytes());
     	
     	servlet.doPost(request, response);    	
-    	System.out.println(response.getStatus());
+    	//System.out.println(response.getStatus());
     	assert(response.getStatus() == 400);    	
     }
         

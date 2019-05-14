@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -100,15 +102,29 @@ public class App extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		String contentFormat = "application/json";
-		String header = request.getHeader("Accept");
+		String acceptheader = null;
+		
+		
+		if(request.getHeader("Accept") != null) {
+			acceptheader = request.getHeader("Accept");
+			System.out.println("header: " + acceptheader.toString());
+		} else {
+			// wrap it to give it a header
+	        HttpServletRequest req = (HttpServletRequest) request;
+	        HeaderMapRequestWrapper requestWrapper = new HeaderMapRequestWrapper(req);
+	        requestWrapper.addHeader("Accept", "application/json");
+	        System.out.println("new header " + requestWrapper.getHeader("Accept").toString());
+	        
+	        acceptheader = requestWrapper.getHeader("Accept");
+		}
 		
 		if (request.getContentType() != null && "application/json".contentEquals(request.getContentType())) {
-			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, header);
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, acceptheader);
 			return;
         }
 		
-		if ("application/xml".contentEquals(header)) {
-			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, header);
+		if ("application/xml".contentEquals(acceptheader)) {
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, acceptheader);
 			return;
         }
 		
@@ -278,17 +294,17 @@ public class App extends HttpServlet {
     	return mapper.writeValueAsString(obj);
     }
     
-    private static String JSONToPojo(Object obj) throws JsonProcessingException {
-    	
-    	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
-    	return mapper.writeValueAsString(obj);
-    }
-    
-    private static Songs getSong(InputStream stream) throws IOException {
-    	
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(stream, Songs.class);
-    }
+//    private static String JSONToPojo(Object obj) throws JsonProcessingException {
+//    	
+//    	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
+//    	return mapper.writeValueAsString(obj);
+//    }
+//    
+//    private static Songs getSong(InputStream stream) throws IOException {
+//    	
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        return objectMapper.readValue(stream, Songs.class);
+//    }
     
     private void writeNewJSONObjToXML(HttpServletRequest request) throws IOException {
     	
@@ -330,6 +346,72 @@ public class App extends HttpServlet {
             e.printStackTrace();
         }
 	}
+    
+    /**
+     * Inner Class to wrap requests and override header
+     * found on: https://stackoverflow.com/questions/2811769/adding-an-http-header-to-the-request-in-a-servlet-filter
+     * answer by Wolfgang Fahl
+     * @author @git miku
+     *
+     */
+    
+    public class HeaderMapRequestWrapper extends HttpServletRequestWrapper {
+        /**
+         * construct a wrapper for this request
+         * 
+         * @param request
+         */
+        public HeaderMapRequestWrapper(HttpServletRequest request) {
+            super(request);
+        }
+
+        private Map<String, String> headerMap = new HashMap<String, String>();
+
+        /**
+         * add a header with given name and value
+         * 
+         * @param name
+         * @param value
+         */
+        public void addHeader(String name, String value) {
+            headerMap.put(name, value);
+        }
+
+        @Override
+        public String getHeader(String name) {
+            String headerValue = super.getHeader(name);
+            if (headerMap.containsKey(name)) {
+                headerValue = headerMap.get(name);
+            }
+            return headerValue;
+        }
+
+        /**
+         * get the Header names
+         */
+        @Override
+        public Enumeration<String> getHeaderNames() {
+            List<String> names = Collections.list(super.getHeaderNames());
+            for (String name : headerMap.keySet()) {
+                names.add(name);
+            }
+            return Collections.enumeration(names);
+        }
+
+        @Override
+        public Enumeration<String> getHeaders(String name) {
+            List<String> values = Collections.list(super.getHeaders(name));
+            if (headerMap.containsKey(name)) {
+                values.add(headerMap.get(name));
+            }
+            return Collections.enumeration(values);
+        }
+
+    }
+    
+    
 	
 }
+
+
  
