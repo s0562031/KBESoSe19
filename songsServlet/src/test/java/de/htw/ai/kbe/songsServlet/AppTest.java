@@ -115,19 +115,19 @@ public class AppTest {
         servlet.doGet(request, response);
         assertEquals(request.getHeader("Accept"), response.getContentType());
     }
-    
-   /* @Test
+    /*
+    @Test
     public void doGetWithWOAcceptHeaderReturnsJSON() throws IOException {
         servlet.doGet(request, response);
         assertEquals("application/json", response.getContentType());
     }*/
     
-   /* @Test
+    @Test
     public void doGetWithXMLInAcceptHeaderReturnsJSON() throws IOException {
     	request.addHeader("Accept", "application/xml");
         servlet.doGet(request, response);
         assert(response.getStatus() == 406);
-    } */
+    }
     
     
     @Test

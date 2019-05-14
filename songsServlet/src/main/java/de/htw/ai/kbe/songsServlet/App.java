@@ -88,14 +88,18 @@ public class App extends HttpServlet {
 		String contentFormat = "application/json";
 		String header = request.getHeader("Accept");
 		
-		/*if (header != "application/json") {
+		if (request.getContentType() != null && "application/json".contentEquals(request.getContentType())) {
 			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, header);
 			return;
-        }*/
+        }
 		
-		if (header == null) {			
-			((HttpServletResponse) request).addHeader("Accept", "application/json");
-			header = request.getHeader("Accept");
+		if ("application/xml".contentEquals(header)) {
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, header);
+			return;
+        }
+		
+		if(request.getContentType() == null) {
+			// ???
 		}
 		
 		// alle Parameter (keys)
@@ -104,7 +108,7 @@ public class App extends HttpServlet {
 		if (!paramNames.hasMoreElements()) {
 			
 			String allSongs = pojoToJSON(songList);			
-			outputText(response, allSongs, "application/json", "ok");
+			outputText(response, allSongs, contentFormat, "ok");
 			
 			return;
 			
@@ -141,7 +145,7 @@ public class App extends HttpServlet {
 						 } else {
 							 
 							 String song = pojoToJSON(searchedSong); //map searchedSong to JSON						
-							 outputText(response, song, "application/json", "ok");
+							 outputText(response, song, contentFormat, "ok");
 						 }
 						 
 					} catch (NumberFormatException e) {				
@@ -188,8 +192,7 @@ public class App extends HttpServlet {
 	}
 	
 	private void outputText(HttpServletResponse response, String content, String contentFormat, String status) throws IOException {
-       
-		response.setContentType(contentFormat);        
+        response.setContentType(contentFormat);        
         response.setCharacterEncoding("UTF-8");
         
         if("created".equals(status)) {
