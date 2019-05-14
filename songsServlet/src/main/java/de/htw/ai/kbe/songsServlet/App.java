@@ -72,7 +72,7 @@ public class App extends HttpServlet {
 	}
 	
 	public void test() throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
-		
+	
 		loadSongs("/var/tmp/songs.xml");
 		this.writeSongListToXML("/var/tmp/songs.xml");
 	}
@@ -103,8 +103,7 @@ public class App extends HttpServlet {
 		
 		String contentFormat = "application/json";
 		String acceptheader = null;
-		
-		
+				
 		if(request.getHeader("Accept") != null) {
 			acceptheader = request.getHeader("Accept");
 			System.out.println("header: " + acceptheader.toString());
@@ -119,18 +118,14 @@ public class App extends HttpServlet {
 		}
 		
 		if (request.getContentType() != null && "application/json".contentEquals(request.getContentType())) {
-			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, acceptheader);
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Header wird nicht akzeptiert");
 			return;
         }
 		
 		if ("application/xml".contentEquals(acceptheader)) {
-			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, acceptheader);
+			response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, "Header wird nicht akzeptiert");
 			return;
         }
-		
-		if(request.getContentType() == null) {
-			// ???
-		}
 		
 		// alle Parameter (keys)
 		Enumeration<String> paramNames = request.getParameterNames();
@@ -313,16 +308,17 @@ public class App extends HttpServlet {
      * 
      * @param filename
      * @throws JAXBException
+     * @throws FileNotFoundException 
      */
-    private void writeSongListToXML(String filename) throws JAXBException {
+    private void writeSongListToXML(String filename) throws JAXBException, FileNotFoundException {
     	
     	//System.out.println("filename:" + filename);
     	
     	JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
     	Marshaller marshall = context.createMarshaller();
-    	
+    	marshall.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
     	SongList wrapper = new SongList(songList);    	
-    	marshall.marshal(wrapper, new File(filename));
+    	marshall.marshal(wrapper, new FileOutputStream(filename));
     	
     }
     
@@ -409,7 +405,10 @@ public class App extends HttpServlet {
         	}       	
         } catch (JAXBException e) {
             e.printStackTrace();
-        }
+        } catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
     
     /* ############################################################################################################# */
