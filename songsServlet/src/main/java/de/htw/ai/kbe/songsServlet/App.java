@@ -73,8 +73,8 @@ public class App extends HttpServlet {
 	
 	public void test() throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
 		
-		loadSongs("songs.xml");
-		this.writeSongListToXML("songs.xml");
+		loadSongs("/var/tmp/songs.xml");
+		this.writeSongListToXML("/var/tmp/songs.xml");
 	}
 	
 	
@@ -197,13 +197,13 @@ public class App extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 				
-		// addes check for null
+		// added check for null
 		if(request.getContentType() != null && "application/json".contentEquals(request.getContentType())) {
 			
 			synchronized (this) {
 				try {
 					int currentSongId = nextSongId;
-					writeNewJSONObjToXML(request);
+					writeNewJSONObjToSongList(request);
 					
 					response.setHeader("Location", "http://localhost:8080/songsServlet?songId="+currentSongId);
                     response.setStatus(201);
@@ -221,6 +221,15 @@ public class App extends HttpServlet {
 		 }		
 	}
 	
+	/**
+	 * Creates proper output for response.
+	 * 
+	 * @param response
+	 * @param content
+	 * @param contentFormat
+	 * @param status
+	 * @throws IOException
+	 */
 	private void outputText(HttpServletResponse response, String content, String contentFormat, String status) throws IOException {
        
 		response.setContentType(contentFormat);        
@@ -247,11 +256,30 @@ public class App extends HttpServlet {
         return null;
     }
 	
+	/**
+	 * Writes output from readXMLToSongs to songList.
+	 * 
+	 * @param songsxmlfile - path and name of xml
+	 * @throws FileNotFoundException
+	 * @throws JAXBException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
 	protected void loadSongs(String songsxmlfile) throws FileNotFoundException, JAXBException, IOException, URISyntaxException {
 		
 	       this.songList = readXMLToSongs(songsxmlfile);
 	}
 	
+	/**
+	 * Calls unmarshal to read songs from xml file.
+	 * 
+	 * @param filename - path of xml file
+	 * @return
+	 * @throws JAXBException
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
     private static List<Songs> readXMLToSongs(String filename) throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
     	
         JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
@@ -265,13 +293,30 @@ public class App extends HttpServlet {
     }
     
     /**
-     * Marshaller
+     * Maps Songlist as a wrapper with XML annotation.
+     * 
+     * @param unmarshaller
+     * @param clazz
+     * @param xmlLocation
+     * @return
+     * @throws JAXBException
+     */
+    private static List<Songs> unmarshal(Unmarshaller unmarshaller, Class<Songs> clazz, String xmlLocation) throws JAXBException {
+        
+    	StreamSource xml = new StreamSource(xmlLocation);
+        SongList wrapper = (SongList) unmarshaller.unmarshal(xml, SongList.class).getValue();
+        return wrapper.getSongs();
+    }
+    
+    /**
+     * Uses SongList as a wrapper to map POJOS of Songs in List<Songs> back to xml.
+     * 
      * @param filename
      * @throws JAXBException
      */
     private void writeSongListToXML(String filename) throws JAXBException {
     	
-    	System.out.println("filename:" + filename);
+    	//System.out.println("filename:" + filename);
     	
     	JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
     	Marshaller marshall = context.createMarshaller();
@@ -281,13 +326,14 @@ public class App extends HttpServlet {
     	
     }
     
-    private static List<Songs> unmarshal(Unmarshaller unmarshaller, Class<Songs> clazz, String xmlLocation) throws JAXBException {
-        
-    	StreamSource xml = new StreamSource(xmlLocation);
-        SongList wrapper = (SongList) unmarshaller.unmarshal(xml, SongList.class).getValue();
-        return wrapper.getSongs();
-    }
-    
+
+    /**
+     * Maps POJO song objects to JSON.
+     * 
+     * @param obj
+     * @return
+     * @throws JsonProcessingException
+     */
     private static String pojoToJSON(Object obj) throws JsonProcessingException {
     	
     	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -306,7 +352,13 @@ public class App extends HttpServlet {
 //        return objectMapper.readValue(stream, Songs.class);
 //    }
     
-    private void writeNewJSONObjToXML(HttpServletRequest request) throws IOException {
+    /**
+     * Maps JSON object to song POJO and calls addSongToSongList.
+     * 
+     * @param request
+     * @throws IOException
+     */
+    private void writeNewJSONObjToSongList(HttpServletRequest request) throws IOException {
     	
 		ServletInputStream inputStream = request.getInputStream();
 	    Map<String, Object> jsonMap =  this.objectmapper.readValue(inputStream, new TypeReference<Map<String, Object>>(){});
@@ -316,6 +368,11 @@ public class App extends HttpServlet {
 	    this.addSongToSongList(newSong);
     }
     
+    /**
+     * Adds songs to SongList and sorts it by id.
+     * 
+     * @param song
+     */
     private void addSongToSongList(Songs song) {
     	
         song.setId(nextSongId);
@@ -331,21 +388,31 @@ public class App extends HttpServlet {
         this.nextSongId++;              
     }
     
+    /**
+     * Returns songList.
+     * 
+     * @return
+     */
     public List<Songs> getSongList() {
     	return songList;
     }
      
+    /**
+     * Writes all songs in songList to xml given in web.xml config file.
+     * 
+     */
     @Override
     public void destroy() {
         try {
         	if(songList != null) {
-        		//XmlMapper xmlMapper = new XmlMapper();
-        		//xmlMapper.writerWithDefaultPrettyPrinter().writeValue(new File(songsxmlfile), songList);
+        		this.writeSongListToXML(songsxmlfile);
         	}       	
-        } catch (Exception e) {
+        } catch (JAXBException e) {
             e.printStackTrace();
         }
 	}
+    
+    /* ############################################################################################################# */
     
     /**
      * Inner Class to wrap requests and override header
