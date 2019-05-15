@@ -28,9 +28,13 @@ Der deploy wird folgendermaßen ausgeführt
 
 ```
 mvn clean install tomcat7:deploy
+
+```
+Der Webservice kann nun aufegrufen werden
 ```
 
-Der Webservice kann nun über http://127.0.0.1:8080/songsServlet/ aufegrufen werden
+```
+http://127.0.0.1:8080/songsServlet/
 
 ## Anfragen senden
 
