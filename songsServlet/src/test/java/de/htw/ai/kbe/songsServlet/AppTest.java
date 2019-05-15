@@ -15,8 +15,13 @@ import org.springframework.mock.web.MockServletConfig;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -43,7 +48,11 @@ public class AppTest {
         response = new MockHttpServletResponse();
         response.setCharacterEncoding("UTF-8"); // very important, otherwise the strings can't be equal
         config = new MockServletConfig();
-        config.addInitParameter("songsxml", "/var/tmp/songs.xml");
+        
+        File songfile = new File("src/test/resources/songs.xml");
+        System.out.println(songfile.getAbsolutePath());
+        
+        config.addInitParameter("songsxml", songfile.getAbsolutePath());
         servlet.init(config); //throws ServletException
         
         
@@ -61,6 +70,16 @@ public class AppTest {
         mynewsong.put("album", "Morning Glory");
         mynewsong.put("released", 1995);
 
+    }
+    
+    @Before
+    public void testXMLIntegrity() throws FileNotFoundException, JAXBException, IOException, URISyntaxException {
+    	try {
+    		servlet.loadSongs("src/test/resources/songs.xml");
+    	} catch(Exception e) {
+    		System.out.println("Corrupt XML, cannot perform further tests.");
+    		System.exit(1);    
+    	}
     }
     
     @Test
@@ -91,6 +110,7 @@ public class AppTest {
     	JSONAssert.assertEquals("{id:9}", songNine, false); 
     }
     
+    
     @Test
     public void getJSONObjForSongID9() throws IOException {
     	request.addParameter("songId", "9");
@@ -108,6 +128,7 @@ public class AppTest {
     	assertTrue(response.getContentAsString().contains("Private Show"));
     	assert(response.getStatus() == 200);
     }
+    
 
     @Test
     public void doGetWithJSONInAcceptHeaderReturnsJSON() throws IOException {
@@ -213,7 +234,6 @@ public class AppTest {
     	//System.out.println(response.getStatus());
     	assert(response.getStatus() == 400);    	
     }
-        
 
 }
 

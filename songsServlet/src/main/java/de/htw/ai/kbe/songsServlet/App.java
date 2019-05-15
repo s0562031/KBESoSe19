@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
@@ -277,12 +278,16 @@ public class App extends HttpServlet {
 	 */
     private static List<Songs> readXMLToSongs(String filename) throws JAXBException, FileNotFoundException, IOException, URISyntaxException {
     	
+    	List<Songs> songs = null;
         JAXBContext context = JAXBContext.newInstance(SongList.class, Songs.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
         
         try (InputStream is = new BufferedInputStream(new FileInputStream(filename))) {
-            List<Songs> songs = unmarshal(unmarshaller, Songs.class, filename);
-                     
+           try {
+        	 songs = unmarshal(unmarshaller, Songs.class, filename);
+           } catch (Exception e) {
+        	   e.printStackTrace();
+           }
             return songs;
         }
     }
@@ -296,7 +301,7 @@ public class App extends HttpServlet {
      * @return
      * @throws JAXBException
      */
-    private static List<Songs> unmarshal(Unmarshaller unmarshaller, Class<Songs> clazz, String xmlLocation) throws JAXBException {
+    private static List<Songs> unmarshal(Unmarshaller unmarshaller, Class<Songs> clazz, String xmlLocation) throws JAXBException, UnmarshalException {
         
     	StreamSource xml = new StreamSource(xmlLocation);
         SongList wrapper = (SongList) unmarshaller.unmarshal(xml, SongList.class).getValue();
