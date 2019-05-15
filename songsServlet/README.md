@@ -8,9 +8,9 @@ Dieser Webservice liest zunächst eine XML Datei mit entsprechenden Songs ein. D
 
 ### Vorraussetzungen
 
-Tomcat7 Server
-Maven
-Java 11
+Tomcat7 Server  
+Maven  
+Java 11  
 songs.xml
 
 ### Installation
@@ -34,7 +34,7 @@ Der Webservice kann nun über http://127.0.0.1:8080/songsServlet/ aufegrufen wer
 
 ## Anfragen senden
 
-#Get Anfragen
+Get Anfragen
 
 Gibt alle Songs zurück
 
@@ -48,7 +48,7 @@ Gibt einen bestimmten Song zurück
 http://127.0.0.1:8080/songsServlet/?songId=2
 ```
 
-#Post Anfragen
+Post Anfragen
 
 Post Anfrage an 
 
@@ -70,5 +70,5 @@ application/json
 
 ## Authors
 
-Dustin ...
+Dustin ...  
 Katharina Kozlowska - s0553332
