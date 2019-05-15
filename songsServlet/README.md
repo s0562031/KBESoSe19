@@ -74,5 +74,5 @@ application/json
 
 ## Authors
 
-Dustin ...  
+Dustin Schweitzberger - s0562031  
 Katharina Kozlowska - s0553332
