@@ -31,10 +31,10 @@ mvn clean install tomcat7:deploy
 
 ```
 Der Webservice kann nun aufegrufen werden
-```
 
 ```
 http://127.0.0.1:8080/songsServlet/
+```
 
 ## Anfragen senden
 
