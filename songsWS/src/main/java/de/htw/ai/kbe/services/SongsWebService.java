@@ -1,21 +1,37 @@
 package de.htw.ai.kbe.services;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.StringWriter;
 import java.util.Collection;
+import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
+import de.htw.ai.kbe.bean.SongList;
 import de.htw.ai.kbe.bean.Songs;
-import de.htw.ai.kbe.storage.InMemoryAddressBook;
+import de.htw.ai.kbe.storage.InMemorySongsDB;
 
 // URL fuer diesen Service ist: 
 //http://localhost:8080/songsWS/rest/songs 
@@ -23,29 +39,104 @@ import de.htw.ai.kbe.storage.InMemoryAddressBook;
 public class SongsWebService {
 
 	// Singleton Pattern
-    private InMemoryAddressBook addressBook = InMemoryAddressBook.getInstance();
+    private InMemorySongsDB addressBook = InMemorySongsDB.getInstance();
+    private DBWhisperer dbwhisperer= new DBWhisperer();
     
     //GET http://localhost:8080/songsWS/rest/songs
+//	@GET 
+//	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }) // JSON an erster Stelle ist default
+//	public Collection<Songs> getAllSongs() {
+//		System.out.println("getAllSongs: Returning all songs!");
+//		return addressBook.getAllSongs(); // Collection von POJOs
+//	}
+	
 	@GET 
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }) // JSON an erster Stelle ist default
-	public Collection<Songs> getAllSongs() {
-		System.out.println("getAllSongs: Returning all songs!");
-		return addressBook.getAllSongs(); // Collection von POJOs
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
+	public Response getAllSongs(@Context HttpHeaders headers) {
+		
+		String dbresponse = null;
+		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
+		
+		List<Songs> responseSong = dbwhisperer.getAllSongs();
+		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
+		
+		// JSON is standard, if no or both types are given use it
+		if(acceptableTypes.contains(MediaType.WILDCARD_TYPE)) acceptableTypes.add(MediaType.APPLICATION_JSON_TYPE);
+		
+		if(acceptableTypes.contains(MediaType.APPLICATION_JSON_TYPE)) {
+			try {
+				dbresponse = pojoToJSON(responseSong);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+			} 
+			
+			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/json").build();
+
+		} 
+		
+		else if(acceptableTypes.contains(MediaType.APPLICATION_XML_TYPE) && !acceptableTypes.contains(MediaType.APPLICATION_JSON_TYPE)) {
+			try {
+				dbresponse = pojoListToXML(responseSong);
+			} catch (JAXBException e) {
+				e.printStackTrace();
+				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+			} 
+			
+			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/xml").build();
+		}	
+		
+		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
 	}
 
     //GET http://localhost:8080/songsWS/rest/songs/1
 	//Returns: 200 & contact with id 1 or 404 when id not found, 
 	@GET
 	@Path("/{id}")
-	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-	public Response getSong(@PathParam("id") Integer id) {
-		Songs song = addressBook.getSong(id);
-		if (song != null) {
-			System.out.println("getSong: Returning song for id " + id);
-			return Response.status(Response.Status.OK).entity(song).build();
-		} else {
-		    return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
-		}
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  })
+	public Response getSong(@PathParam("id") Integer id, @Context HttpHeaders headers) {
+		
+		String dbresponse = null;
+		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
+		
+		Songs responseSong = dbwhisperer.getSongByID(id);
+		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
+		
+		// JSON is standard, if no or both types are given use it
+		if(acceptableTypes.contains(MediaType.WILDCARD_TYPE)) acceptableTypes.add(MediaType.APPLICATION_JSON_TYPE);
+		
+		if(acceptableTypes.contains(MediaType.APPLICATION_JSON_TYPE)) {
+			try {
+				dbresponse = pojoToJSON(responseSong);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+			} 
+			
+			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/json").build();
+
+		} 
+		
+		else if(acceptableTypes.contains(MediaType.APPLICATION_XML_TYPE) && !acceptableTypes.contains(MediaType.APPLICATION_JSON_TYPE)) {
+			try {
+				dbresponse = pojoToXML(responseSong);
+			} catch (JAXBException e) {
+				e.printStackTrace();
+				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+			} 
+			
+			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/xml").build();
+		}	
+		
+		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
+	}
+	
+	@GET
+	@Path("/{auth}")
+	@Produces({ MediaType.TEXT_PLAIN})
+	public Response getToken(@PathParam("userid") String userid, @PathParam("secret") String pw) {
+		System.out.println("getAllSongs: Returning all songs!");
+		return null;
 	}
 
 	//Returns: 200 and 204 on provided id not found
@@ -85,4 +176,51 @@ public class SongsWebService {
 	public Response deleteSong(@PathParam("id") Integer id) {
 		return Response.status(Response.Status.METHOD_NOT_ALLOWED).entity("DELETE not implemented").build();
 	}
+	
+    /**
+     * Maps POJO song objects to JSON.
+     * 
+     * @param obj
+     * @return
+     * @throws JsonProcessingException
+     */
+    private static String pojoToJSON(Object obj) throws JsonProcessingException {
+    	
+    	ObjectWriter mapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    	return mapper.writeValueAsString(obj);
+    }
+    
+    /**
+     * 
+     * @throws JAXBException
+     * @throws FileNotFoundException 
+     */
+    private String pojoToXML(Object obj) throws JAXBException {
+    	
+    	//System.out.println("filename:" + filename);
+    	
+    	JAXBContext context = JAXBContext.newInstance(obj.getClass());
+    	Marshaller marshall = context.createMarshaller();
+    	marshall.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); 
+    	
+    	StringWriter sw = new StringWriter();
+    	
+    	marshall.marshal(obj,sw);
+    	
+    	return sw.toString();
+    }
+    
+    private String pojoListToXML(List<Songs> songList) throws JAXBException {
+    	    	
+    	JAXBContext context = JAXBContext.newInstance(SongList.class);
+    	Marshaller marshall = context.createMarshaller();
+    	marshall.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); 
+    	
+    	StringWriter sw = new StringWriter();
+    	
+    	SongList wrapper = new SongList(songList); 
+    	marshall.marshal(wrapper,sw);
+    	
+    	return sw.toString();
+    }
 }

@@ -1,11 +1,22 @@
 package de.htw.ai.kbe.bean;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@Entity
 @XmlRootElement(name = "songs")
+@Table(name="songs")
 public class Songs {
 
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
+    
 	private String title;
 	private String artist;
 	private String album;
@@ -20,7 +31,7 @@ public class Songs {
 	}
 	
 	public Songs(Builder build) {
-		this.id = build.id;
+		//this.id = build.id;
 		this.title = build.title;
 		this.artist = build.artist;
 		this.album = build.album;
@@ -31,13 +42,13 @@ public class Songs {
 	public Songs() {
 	}
 
-	public Integer getId() {
-		return id;
-	}
+//	public Integer getId() {
+//		return id;
+//	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+//	public void setId(Integer id) {
+//		this.id = id;
+//	}
 
 	public String getTitle() {
 		return title;
@@ -74,15 +85,15 @@ public class Songs {
 	// Example of a builder:
 	public static class Builder {
 		// required parameter
-		private Integer id;
+		//private Integer id;
 		private String title;
 		// optional 
 		private String artist;
 		private String album;
 		private int release;
 
-		public Builder(Integer id, String title) {
-			this.id = id;
+		public Builder(String title) {
+			//this.id = id;
 			this.title = title;
 		}
 		

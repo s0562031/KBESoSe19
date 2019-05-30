@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.songsServlet;
+package de.htw.ai.kbe.bean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement(name = "songs")
 public class SongList {
 	
-	@XmlElement(name = "song")
+	//@XmlElement(name = "song")
 	private List<Songs> songs;
 	
 
