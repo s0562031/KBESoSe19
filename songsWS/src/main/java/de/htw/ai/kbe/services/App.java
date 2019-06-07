@@ -68,15 +68,15 @@ public class App {
             	em.persist(s);
             }
             
-            int id = 0;
-            Query q = em.createQuery("SELECT u FROM songs u");
-            List<Songs> loadedSongList = q.getResultList();
-            
-            System.out.println("All songs - size: " + loadedSongList.size());
-            
-            for (Songs u : loadedSongList) {
-                System.out.println(" with title: " + u.getTitle());
-            }
+//            int id = 0;
+//            Query q = em.createQuery("SELECT u FROM songs u");
+//            List<Songs> loadedSongList = q.getResultList();
+//            
+//            System.out.println("All songs - size: " + loadedSongList.size());
+//            
+//            for (Songs u : loadedSongList) {
+//                System.out.println(" with title: " + u.getTitle());
+//            }
 
             
             // commit transaction
