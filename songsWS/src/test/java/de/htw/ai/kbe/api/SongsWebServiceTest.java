@@ -42,13 +42,13 @@ class SongsWebServiceTest extends JerseyTest {
 	        });
 	    }*/
 	 	
-	 	/* @Override
+	 	@Override
 		public Application configure() {
 			enable(TestProperties.LOG_TRAFFIC);
 			enable(TestProperties.DUMP_ENTITY);
 			return new ResourceConfig(SongsWebService.class);
 		}
-	    
+	 	/*
 	    @Test
 		public void getAllSongs_OK_Test() {
 	    	
@@ -92,7 +92,7 @@ class SongsWebServiceTest extends JerseyTest {
 	        song.setRelease(2000);
 			
 			Response response = target("/songs/").request().post(Entity.entity(song, MediaType.TEXT_HTML));
-			assertEquals("Should return status 400", Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+			assertEquals("Should return status 415", Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
 			
 			System.out.println(response.getStatus());			
 		}
@@ -113,15 +113,7 @@ class SongsWebServiceTest extends JerseyTest {
 	        assertEquals("Should return status 204", Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 	        
 	        System.out.println(response.getStatus());
-	        
-	        //Songs responseSong = sDao.getSong(5);
-	        
-	        //assertNotNull(responseSong);
-	        //assertEquals(Integer.valueOf(5), responseSong.getId());
-	        //assertEquals("testtitle", responseSong.getTitle());
-	        //assertEquals("testalbum", responseSong.getArtist());
-	        //assertEquals("testartist", responseSong.getAlbum());
-	        //assertEquals(2000, responseSong.getRelease());
+
 	    }
 		
 		 @Test
@@ -139,6 +131,7 @@ class SongsWebServiceTest extends JerseyTest {
 		     
 		     System.out.println(response.getStatus());
 		 }
+		 
 		 
 		 @Test
 		 public void deleteSong_Exists_Test() {

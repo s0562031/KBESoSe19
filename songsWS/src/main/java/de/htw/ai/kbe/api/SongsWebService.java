@@ -112,7 +112,7 @@ public class SongsWebService {
 		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
 		
 		Songs responseSong = sDAO.getSong(id);
-		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
+		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " not found.").build();
 		
 		// JSON is standard, if no or both types are given use it
 		if(acceptableTypes.contains(MediaType.WILDCARD_TYPE)) acceptableTypes.add(MediaType.APPLICATION_JSON_TYPE);
@@ -176,10 +176,10 @@ public class SongsWebService {
     public Response updateSong(@PathParam("id") Integer id, Songs song) {
 		
 		if ((sDAO.updateSong(song, id))){
-            return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " geupdated.").build();
+            return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " updated.").build();
         }
             
-		return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " nicht gefunden.").build();        
+		return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " not found.").build();        
     }
 
 	@DELETE
@@ -190,7 +190,7 @@ public class SongsWebService {
             return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();
         }
 		
-        return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " nicht gefunden.").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " not found.").build();
  	}
 	
     /**

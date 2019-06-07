@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
-@XmlRootElement(name = "songs")
+@XmlRootElement(name = "song")
 @Table(name="songs")
 public class Songs {
 
@@ -53,7 +53,8 @@ public class Songs {
 	public String getTitle() {
 		return title;
 	}
-
+	
+	@XmlElement(name="title")	
 	public void setTitle(String title) {
 		this.title = title;
 	}
