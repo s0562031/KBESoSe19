@@ -9,7 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
 import de.htw.ai.kbe.data.Songs;
-import de.htw.ai.kbe.services.TokenGenerator;
+import de.htw.ai.kbe.services.TokenHandler;
 
 @Singleton
 public class SongsDBDAO implements ISongsDAO {

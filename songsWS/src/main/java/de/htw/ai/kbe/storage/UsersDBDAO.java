@@ -1,5 +1,6 @@
 package de.htw.ai.kbe.storage;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -9,14 +10,39 @@ import javax.persistence.Query;
 
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.data.Users;
+import de.htw.ai.kbe.services.TokenHandler;
 
 public class UsersDBDAO implements IUsersDAO {
 	
     private EntityManagerFactory factory;
+    // bad should be DI
+    private TokenHandler tk = new TokenHandler();
 
     @Inject
     public UsersDBDAO(EntityManagerFactory emf) {
         this.factory = emf;
+    }
+    
+    public String getToken(String userid, String pw) {
+    	
+    	EntityManager em = factory.createEntityManager();		
+		List<Users> userlist = null;
+		
+		Users user = this.getUserByID(Integer.parseInt(userid));
+		
+		// if user legit, get him a token
+		if(user.getPassword() == pw) {
+			
+			try {
+				tk.generateToken(Integer.parseInt(userid), pw);
+			} catch (NumberFormatException | NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+    	
     }
 
 	@Override

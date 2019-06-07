@@ -143,13 +143,7 @@ public class SongsWebService {
 		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
 	}
 	
-	@GET
-	@Path("/{auth}")
-	@Produces({ MediaType.TEXT_PLAIN})
-	public Response getToken(@PathParam("userid") String userid, @PathParam("secret") String pw) {
-		System.out.println("getAllSongs: Returning all songs!");
-		return null;
-	}
+
 
 	//Returns: 200 and 204 on provided id not found
 //	@GET

@@ -10,5 +10,6 @@ public interface IUsersDAO {
 	public List<Users> getAllUsers();
 	public void saveUser();
 	public void deleteCUser();
+	public String getToken(String userid, String pw);
 
 }
