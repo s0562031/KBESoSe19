@@ -2,6 +2,7 @@ package de.htw.ai.kbe.services;
 
 
 import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -11,9 +12,11 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
-import de.htw.ai.kbe.bean.SongList;
-import de.htw.ai.kbe.bean.Songs;
+
+import de.htw.ai.kbe.data.SongList;
+import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.SongsDBDAO;
 
 public class App {
 	
@@ -27,12 +30,13 @@ public class App {
     
 //    private static InMemorySongsDB inmemsongs = InMemorySongsDB.getInstance();
 
+	/*
     //TODO EXCEPTIONS
     @SuppressWarnings("unchecked")
     public static void main(String[] args) throws FileNotFoundException, JAXBException, IOException, URISyntaxException {
     	
     	
-    	DBWhisperer dbw = new DBWhisperer();
+    	SongsDBDAO dbw = new SongsDBDAO();
     	
     	System.out.println(dbw.getAllSongs());
     	System.out.println(dbw.getSongByID(2));
@@ -91,5 +95,5 @@ public class App {
 //        }
     }
     
-    
+ */   
 }

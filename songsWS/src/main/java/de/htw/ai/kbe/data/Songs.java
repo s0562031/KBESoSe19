@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.bean;
+package de.htw.ai.kbe.data;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

@@ -1,11 +1,13 @@
 package de.htw.ai.kbe.storage;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import de.htw.ai.kbe.bean.Songs;
 
-public class InMemorySongsDB {
+import de.htw.ai.kbe.data.Songs;
+
+public class InMemorySongsDB implements ISongsDAO {
 
     private static InMemorySongsDB instance = null;
     
@@ -94,14 +96,17 @@ public class InMemorySongsDB {
         storage.put(11, myfirstsong);      
     }
     
+    @Override
     public Songs getSong(Integer id) {
         return storage.get(id);
     }
     
-    public Collection<Songs> getAllSongs() {
-        return storage.values();
+    @Override
+    public List<Songs> getAllSongs() {
+        return (List<Songs>) storage.values();
     }
     
+    @Override
     public Integer addSong(Songs song) {
 //        song.setId((int)storage.keySet().stream().count() + 1);
 //        storage.put(song.getId(), song);
@@ -110,11 +115,13 @@ public class InMemorySongsDB {
     }
     
     // updates a contact in the db
+    @Override
     public boolean updateSong(Songs contact) {
         throw new UnsupportedOperationException("updateContact: not yet implemented");
     }
     
     // returns deleted contact
+    @Override
     public Songs deleteSong(Integer id) {
         throw new UnsupportedOperationException("deleteContact: not yet implemented");
     }

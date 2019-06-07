@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.services;
+package de.htw.ai.kbe.api;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -29,9 +30,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import de.htw.ai.kbe.bean.SongList;
-import de.htw.ai.kbe.bean.Songs;
+import de.htw.ai.kbe.data.SongList;
+import de.htw.ai.kbe.data.Songs;
+import de.htw.ai.kbe.storage.ISongsDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.SongsDBDAO;
 
 // URL fuer diesen Service ist: 
 //http://localhost:8080/songsWS/rest/songs 
@@ -39,8 +42,17 @@ import de.htw.ai.kbe.storage.InMemorySongsDB;
 public class SongsWebService {
 
 	// Singleton Pattern
-    private InMemorySongsDB addressBook = InMemorySongsDB.getInstance();
-    private DBWhisperer dbwhisperer= new DBWhisperer();
+	// tight Coupling
+	// user interface --> IMAB implements interface
+	//* zum testen nutzen *//
+    //private InMemorySongsDB addressBook = InMemorySongsDB.getInstance();
+    //private SongsDBDAO sDAO= new SongsDBDAO();
+    private ISongsDAO sDAO;
+    
+    @Inject
+    public SongsWebService(ISongsDAO sDAO) {
+    	this.sDAO = sDAO;
+    }
     
     //GET http://localhost:8080/songsWS/rest/songs
 //	@GET 
@@ -57,7 +69,7 @@ public class SongsWebService {
 		String dbresponse = null;
 		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
 		
-		List<Songs> responseSong = dbwhisperer.getAllSongs();
+		List<Songs> responseSong = sDAO.getAllSongs();
 		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
 		
 		// JSON is standard, if no or both types are given use it
@@ -99,7 +111,7 @@ public class SongsWebService {
 		String dbresponse = null;
 		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
 		
-		Songs responseSong = dbwhisperer.getSongByID(id);
+		Songs responseSong = sDAO.getSong(id);
 		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
 		
 		// JSON is standard, if no or both types are given use it
@@ -154,15 +166,15 @@ public class SongsWebService {
 	@Context 
 	UriInfo uriInfo;
 	
-	@POST
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	@Produces(MediaType.TEXT_PLAIN)
-	public Response createContact(Songs song) {
-	     Integer newId = addressBook.addSong(song);
-	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-	     uriBuilder.path(Integer.toString(newId));
-	     return Response.created(uriBuilder.build()).build();
-	}
+//	@POST
+//	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+//	@Produces(MediaType.TEXT_PLAIN)
+//	public Response createSong(Songs song) {
+//	     Integer newId = addressBook.addSong(song);
+//	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+//	     uriBuilder.path(Integer.toString(newId));
+//	     return Response.created(uriBuilder.build()).build();
+//	}
     	
 	@PUT
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

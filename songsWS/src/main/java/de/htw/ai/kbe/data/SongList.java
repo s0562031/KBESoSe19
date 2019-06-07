@@ -1,4 +1,4 @@
-package de.htw.ai.kbe.bean;
+package de.htw.ai.kbe.data;
 
 import java.util.ArrayList;
 import java.util.List;
