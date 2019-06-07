@@ -25,6 +25,10 @@ public class InMemorySongsDB {
         return instance;
     }
     
+    public Collection<Songs> getAllSongs() {
+    	return storage.values();
+    }
+    
     private void initSomeSongs() {
               
     	// TODO

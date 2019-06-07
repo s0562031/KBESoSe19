@@ -1,0 +1,7 @@
+CREATE TABLE songs (
+    "id" SERIAL PRIMARY KEY,
+    "title" character varying(128),
+    "artist" character varying(128),
+    "album" character varying(128),
+    "release" integer
+)

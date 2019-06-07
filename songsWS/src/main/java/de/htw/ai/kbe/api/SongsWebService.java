@@ -143,13 +143,7 @@ public class SongsWebService {
 		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
 	}
 	
-	@GET
-	@Path("/{auth}")
-	@Produces({ MediaType.TEXT_PLAIN})
-	public Response getToken(@PathParam("userid") String userid, @PathParam("secret") String pw) {
-		System.out.println("getAllSongs: Returning all songs!");
-		return null;
-	}
+
 
 	//Returns: 200 and 204 on provided id not found
 //	@GET
@@ -181,17 +175,23 @@ public class SongsWebService {
 	@Path("/{id}")
     public Response updateSong(@PathParam("id") Integer id, Songs song) {
 		
-		sDAO.updateSong(song);
-        return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " geupdated.").build();
+		if ((sDAO.updateSong(song, id))){
+            return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " geupdated.").build();
+        }
+            
+		return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " nicht gefunden.").build();        
     }
 
 	@DELETE
 	@Path("/{id}")
 	public Response deleteSong(@PathParam("id") Integer id) {
 		
-		sDAO.deleteSong(id);			
-		return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();
-	}
+		if (sDAO.deleteSong(id)) {
+            return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();
+        }
+		
+        return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " nicht gefunden.").build();
+ 	}
 	
     /**
      * Maps POJO song objects to JSON.
