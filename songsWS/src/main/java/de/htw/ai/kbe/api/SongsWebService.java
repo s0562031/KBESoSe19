@@ -186,7 +186,9 @@ public class SongsWebService {
 	@DELETE
 	@Path("/{id}")
 	public Response deleteSong(@PathParam("id") Integer id) {
-		return Response.status(Response.Status.METHOD_NOT_ALLOWED).entity("DELETE not implemented").build();
+		
+		sDAO.deleteSong(id);			
+		return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();
 	}
 	
     /**

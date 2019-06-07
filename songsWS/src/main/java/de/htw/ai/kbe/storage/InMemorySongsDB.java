@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import de.htw.ai.kbe.data.Songs;
 
-public class InMemorySongsDB implements ISongsDAO {
+public class InMemorySongsDB {
 
     private static InMemorySongsDB instance = null;
     
@@ -96,33 +96,4 @@ public class InMemorySongsDB implements ISongsDAO {
         storage.put(11, myfirstsong);      
     }
     
-    @Override
-    public Songs getSong(Integer id) {
-        return storage.get(id);
-    }
-    
-    @Override
-    public List<Songs> getAllSongs() {
-        return (List<Songs>) storage.values();
-    }
-    
-    @Override
-    public Integer addSong(Songs song) {
-//        song.setId((int)storage.keySet().stream().count() + 1);
-//        storage.put(song.getId(), song);
-//        return song.getId();
-    	return null;
-    }
-    
-    // updates a contact in the db
-    @Override
-    public boolean updateSong(Songs contact) {
-        throw new UnsupportedOperationException("updateContact: not yet implemented");
-    }
-    
-    // returns deleted contact
-    @Override
-    public Songs deleteSong(Integer id) {
-        throw new UnsupportedOperationException("deleteContact: not yet implemented");
-    }
 }

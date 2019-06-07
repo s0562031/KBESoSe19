@@ -100,9 +100,28 @@ public class SongsDBDAO implements ISongsDAO {
 	}
 
 	@Override
-	public Songs deleteSong(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+	public void deleteSong(int id) {
+		
+		EntityManager em = factory.createEntityManager();	
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("DELETE FROM Songs s WHERE s.id = :id");
+            q.setParameter("id", id).getResultList();
+                        
+            em.getTransaction().commit();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            factory.close();
+        }
 	}
+		
 
 }

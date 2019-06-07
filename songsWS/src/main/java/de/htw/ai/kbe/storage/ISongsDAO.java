@@ -11,6 +11,6 @@ public interface ISongsDAO {
 	public List<Songs> getAllSongs();
 	public Integer addSong(Songs newsong);
 	public boolean updateSong(Songs updatesong);
-	public Songs deleteSong(Integer id);
+	public void deleteSong(int id);
 
 }
