@@ -89,14 +89,67 @@ public class SongsDBDAO implements ISongsDAO {
 
 	@Override
 	public Integer addSong(Songs newsong) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		EntityManager em = factory.createEntityManager();	
+		Integer newId = null;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("INSERT INTO Songs s (title, artist, album, release) VALUES (:title, :artist, :album, :release)");
+            q.setParameter("title", newsong.getTitle());
+            q.setParameter("artist", newsong.getArtist());
+            q.setParameter("album", newsong.getAlbum());
+            q.setParameter("release", newsong.getRelease());
+            newId = q.executeUpdate();
+                        
+            em.getTransaction().commit();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            factory.close();
+        }
+		
+		return newId;
 	}
 
 	@Override
 	public boolean updateSong(Songs updatesong) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		EntityManager em = factory.createEntityManager();	
+		boolean execUpdt = false;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("UPDATE Songs s SET title = :title, artist = :artist, album = :album, release = :release WHERE s.id = :id");
+            q.setParameter("id", updatesong.getId());
+            q.setParameter("title", updatesong.getTitle());
+            q.setParameter("artist", updatesong.getArtist());
+            q.setParameter("album", updatesong.getAlbum());
+            q.setParameter("release", updatesong.getRelease());
+            q.executeUpdate();
+            
+            execUpdt = true;
+                        
+            em.getTransaction().commit();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            factory.close();
+        }
+		
+		return execUpdt;
 	}
 
 	@Override

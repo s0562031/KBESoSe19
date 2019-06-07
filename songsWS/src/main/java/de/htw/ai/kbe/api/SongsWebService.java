@@ -166,21 +166,23 @@ public class SongsWebService {
 	@Context 
 	UriInfo uriInfo;
 	
-//	@POST
-//	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-//	@Produces(MediaType.TEXT_PLAIN)
-//	public Response createSong(Songs song) {
-//	     Integer newId = addressBook.addSong(song);
-//	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
-//	     uriBuilder.path(Integer.toString(newId));
-//	     return Response.created(uriBuilder.build()).build();
-//	}
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response createSong(Songs song) {
+	     Integer newId = sDAO.addSong(song);
+	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+	     uriBuilder.path(Integer.toString(newId));
+	     return Response.created(uriBuilder.build()).build();
+	}
     	
 	@PUT
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("/{id}")
     public Response updateSong(@PathParam("id") Integer id, Songs song) {
-        return Response.status(Response.Status.METHOD_NOT_ALLOWED).entity("PUT not implemented").build();
+		
+		sDAO.updateSong(song);
+        return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " geupdated.").build();
     }
 
 	@DELETE
