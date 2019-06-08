@@ -49,6 +49,14 @@ public class UsersDBDAO implements IUsersDAO {
 		return user;
 	}
 	
+//	@Override
+//	public boolean validateUser(String id, String pw) {
+//		
+//		List<Users> allusers = getAllUsers();
+//		
+//		
+//	}
+	
 	@Override
 	public boolean validateUser(String id, String pw) {
 		
@@ -59,7 +67,7 @@ public class UsersDBDAO implements IUsersDAO {
 		try {
             em.getTransaction().begin();
             
-            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = '" + id + "' AND u.password = '" + pw + "'", Users.class);
+            Query q = em.createQuery("SELECT u FROM userlist u WHERE u.userid = '" + id + "' AND u.password = '" + pw + "'", Users.class);
             
 //            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = :userid AND u.password = :password", Users.class)
 //            		.setParameter("userid", id)
@@ -100,7 +108,7 @@ public class UsersDBDAO implements IUsersDAO {
 		try {
             em.getTransaction().begin();
             
-            Query q = em.createQuery("SELECT u FROM userlist u"); //TODO naming of table?
+            Query q = em.createQuery("SELECT u FROM userlist u", Users.class); //TODO naming of table?
             userlist = q.getResultList();
             
             em.getTransaction().commit();
