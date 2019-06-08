@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import de.htw.ai.kbe.data.Songs;
-import de.htw.ai.kbe.data.Users;
+import de.htw.ai.kbe.data.Userlist;
 import de.htw.ai.kbe.services.TokenHandler;
 import de.htw.ai.kbe.storage.IUsersDAO;
 
@@ -54,11 +54,11 @@ public class UsersWebService {
 	}
 	
 	@GET
-	@Path("/{getAll}")
+	@Path("/getAll")
 	@Produces({ MediaType.TEXT_PLAIN})
 	public Response getAllUsers() {
 		
-		List<Users> response = uDAO.getAllUsers();
+		List<Userlist> response = uDAO.getAllUsers();
 		String dbresponse = "empty response";
 		
 		try {

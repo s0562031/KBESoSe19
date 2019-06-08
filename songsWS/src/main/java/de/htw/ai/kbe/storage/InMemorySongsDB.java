@@ -6,18 +6,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import de.htw.ai.kbe.data.Songs;
-import de.htw.ai.kbe.data.Users;
+import de.htw.ai.kbe.data.Userlist;
 
 public class InMemorySongsDB {
 
     private static InMemorySongsDB instance = null;
     
     private Map<Integer,Songs> songStorage;
-    private Map<Integer,Users> userStorage;
+    private Map<Integer,Userlist> userStorage;
     
     private InMemorySongsDB () {
     	songStorage = new ConcurrentHashMap<Integer,Songs>();
-    	userStorage = new ConcurrentHashMap<Integer,Users>();
+    	userStorage = new ConcurrentHashMap<Integer,Userlist>();
         initSomeSongs();
         initSomeUsers();
     }
@@ -33,16 +33,16 @@ public class InMemorySongsDB {
     	return songStorage.values();
     }
     
-    public Collection<Users> getAllUsers() {
+    public Collection<Userlist> getAllUsers() {
     	return userStorage.values();
     }
     
     private void initSomeUsers() {
     	
-    	Users myfirstuser = new Users.Builder("mmuster","321drowssap")
+    	Userlist myfirstuser = new Userlist.Builder("mmuster","321drowssap")
     			.firstname("Maxime")
     			.lastname("Muster").build();
-    	Users myseconduser = new Users.Builder("eschueler","321drowssap")
+    	Userlist myseconduser = new Userlist.Builder("eschueler","321drowssap")
     			.firstname("Elena")
     			.lastname("Schuler").build();
     	

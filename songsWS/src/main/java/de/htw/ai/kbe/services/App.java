@@ -11,7 +11,7 @@ import javax.persistence.Persistence;
 import javax.xml.bind.JAXBException;
 
 import de.htw.ai.kbe.data.Songs;
-import de.htw.ai.kbe.data.Users;
+import de.htw.ai.kbe.data.Userlist;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
 
 public class App {
@@ -53,7 +53,7 @@ public class App {
             	em.persist(s);
             }
             
-            for(Users u : inmemsongs.getAllUsers()) {
+            for(Userlist u : inmemsongs.getAllUsers()) {
             	em.persist(u);
             }
 

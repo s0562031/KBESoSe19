@@ -12,7 +12,7 @@ import de.htw.ai.kbe.data.Songs.Builder;
 // Klasse heisst wie Tabelle, sonst @Table(name="user") falls user kleingeschrieben
 @Entity
 @Table(name="userlist") //postgre does not allow "user"
-public class Users {
+public class Userlist {
 
     // kennzeichnet das Identitätsattribut entspricht dem PK (primary key)
     // bedeutet, dass der PK automatisch durch die DB vergeben wird
@@ -22,7 +22,7 @@ public class Users {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="userid")
 	@Id
-    private String userId;
+    private String userid;
 
     private String firstName;
 
@@ -31,18 +31,18 @@ public class Users {
     private String password;
 
     // noetig
-    public Users() {
+    public Userlist() {
     }
 
-    public Users(String userId, String firstName, String lastName, String password) {
-        this.userId = userId;
+    public Userlist(String userId, String firstName, String lastName, String password) {
+        this.userid = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
     }
     
-	public Users(Builder build) {
-		this.userId = build.userId;		
+	public Userlist(Builder build) {
+		this.userid = build.userId;		
 		this.password = build.password;
 		this.firstName = build.firstName;
 		this.lastName = build.lastName;
@@ -50,7 +50,7 @@ public class Users {
 
 
     public String getUserId() {
-        return userId;
+        return userid;
     }
 
     public String getFirstName() {
@@ -71,7 +71,7 @@ public class Users {
 
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", firstName=" + firstName + ", lastName=" + lastName
+        return "User [userId=" + userid + ", firstName=" + firstName + ", lastName=" + lastName
                 + ", password=" + password + "]";
     }
     
@@ -103,8 +103,8 @@ public class Users {
 			return this;
 		}
 		
-		public Users build() {
-			return new Users(this);
+		public Userlist build() {
+			return new Userlist(this);
 		}
 
 	}

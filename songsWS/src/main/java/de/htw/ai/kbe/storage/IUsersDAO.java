@@ -2,12 +2,12 @@ package de.htw.ai.kbe.storage;
 
 
 import java.util.List;
-import de.htw.ai.kbe.data.Users;
+import de.htw.ai.kbe.data.Userlist;
 
 public interface IUsersDAO {
 	
-	public Users getUserByID(String id);
-	public List<Users> getAllUsers();
+	public Userlist getUserByID(String id);
+	public List<Userlist> getAllUsers();
 	public void saveUser();
 	public void deleteCUser();
 	public boolean validateUser(String id, String pw);
