@@ -1,14 +1,15 @@
 package de.htw.ai.kbe.storage;
 
-import java.security.NoSuchAlgorithmException;
+
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-import de.htw.ai.kbe.data.Songs;
+
 import de.htw.ai.kbe.data.Users;
 import de.htw.ai.kbe.services.TokenHandler;
 
@@ -23,32 +24,71 @@ public class UsersDBDAO implements IUsersDAO {
         this.factory = emf;
     }
     
-    public String getToken(String userid, String pw) {
-    	
-    	EntityManager em = factory.createEntityManager();		
-		List<Users> userlist = null;
-		
-		Users user = this.getUserByID(Integer.parseInt(userid));
-		
-		// if user legit, get him a token
-		if(user.getPassword() == pw) {
-			
-			try {
-				tk.generateToken(Integer.parseInt(userid), pw);
-			} catch (NumberFormatException | NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		return null;
-    	
-    }
+ 
 
 	@Override
-	public Users getUserByID(int id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Users getUserByID(String id) {
+		
+		EntityManager em = factory.createEntityManager();
+		Users user = null;
+	
+		try {
+            user = em.find(Users.class, id);
+
+        } catch (Exception ex) {
+        	
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+            
+        } finally {
+        	// EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+
+        }
+		
+		return user;
+	}
+	
+	@Override
+	public boolean validateUser(String id, String pw) {
+		
+		EntityManager em = factory.createEntityManager();
+		Users user = null;
+		List<Users> userlist = null;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = '" + id + "' AND u.password = '" + pw + "'", Users.class);
+            
+//            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = :userid AND u.password = :password", Users.class)
+//            		.setParameter("userid", id)
+//            		.setParameter("password", pw); 
+            
+            user =  (Users) q.getSingleResult();
+            
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
+		
+		System.out.println(user.toString());
+		
+		if(user != null && user.getUserId() == id && user.getPassword() == pw) return true;
+		else return false;
+
+		
+		
 	}
 
 	@Override
@@ -89,5 +129,7 @@ public class UsersDBDAO implements IUsersDAO {
 		// TODO Auto-generated method stub
 		
 	}
+
+
 
 }

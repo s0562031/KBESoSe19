@@ -6,16 +6,20 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import de.htw.ai.kbe.data.Songs;
+import de.htw.ai.kbe.data.Users;
 
 public class InMemorySongsDB {
 
     private static InMemorySongsDB instance = null;
     
-    private Map<Integer,Songs> storage;
+    private Map<Integer,Songs> songStorage;
+    private Map<Integer,Users> userStorage;
     
     private InMemorySongsDB () {
-        storage = new ConcurrentHashMap<Integer,Songs>();
+    	songStorage = new ConcurrentHashMap<Integer,Songs>();
+    	userStorage = new ConcurrentHashMap<Integer,Users>();
         initSomeSongs();
+        initSomeUsers();
     }
     
     public static InMemorySongsDB getInstance() {
@@ -26,7 +30,24 @@ public class InMemorySongsDB {
     }
     
     public Collection<Songs> getAllSongs() {
-    	return storage.values();
+    	return songStorage.values();
+    }
+    
+    public Collection<Users> getAllUsers() {
+    	return userStorage.values();
+    }
+    
+    private void initSomeUsers() {
+    	
+    	Users myfirstuser = new Users.Builder("mmuster","321drowssap")
+    			.firstname("Maxime")
+    			.lastname("Muster").build();
+    	Users myseconduser = new Users.Builder("eschueler","321drowssap")
+    			.firstname("Elena")
+    			.lastname("Schuler").build();
+    	
+    	userStorage.put(1,myfirstuser);
+    	userStorage.put(2,myseconduser);
     }
     
     private void initSomeSongs() {
@@ -86,18 +107,20 @@ public class InMemorySongsDB {
                 .album("Trolls")
                 .release(2016).build();
         
-        storage.put(1, song_one); 
-        storage.put(2, song_two); 
-        storage.put(3, song_three); 
-        storage.put(4, song_four); 
-        storage.put(5, song_five); 
-        storage.put(6, song_six); 
-        storage.put(7, song_seven); 
-        storage.put(8, song_eight); 
-        storage.put(9, song_nine); 
-        storage.put(10, song_ten); 
+        songStorage.put(1, song_one); 
+        songStorage.put(2, song_two); 
+        songStorage.put(3, song_three); 
+        songStorage.put(4, song_four); 
+        songStorage.put(5, song_five); 
+        songStorage.put(6, song_six); 
+        songStorage.put(7, song_seven); 
+        songStorage.put(8, song_eight); 
+        songStorage.put(9, song_nine); 
+        songStorage.put(10, song_ten); 
         
-        storage.put(11, myfirstsong);      
+        songStorage.put(11, myfirstsong);      
     }
+
+
     
 }

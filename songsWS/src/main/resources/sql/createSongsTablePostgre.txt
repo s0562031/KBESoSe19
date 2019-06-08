@@ -5,3 +5,10 @@ CREATE TABLE songs (
     "album" character varying(128),
     "release" integer
 )
+
+CREATE TABLE userlist (
+    "userid" SERIAL PRIMARY KEY,
+    "password" character varying(128),
+    "firstName" character varying(128),
+    "lastName" character varying(128)
+)

@@ -1,32 +1,50 @@
 package de.htw.ai.kbe.services;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
+import java.util.Base64;
 import java.util.HashMap;
+
 
 public class TokenHandler {
 	
-	private String token = null;
-	private HashMap<Integer, String> tokenMap;
+
+	private HashMap<String, String> tokenMap;
 	
 	public TokenHandler() {
-		tokenMap = new HashMap<Integer,String>();
+		tokenMap = new HashMap<String,String>();
 	}
 	
 	
-	public String generateToken(int userid, String pw) throws NoSuchAlgorithmException {
+	public String generateToken(String userid, String pw)  {
 		
-		MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-		messageDigest.update(pw.getBytes());
-		String encryptedString = new String(messageDigest.digest());
-		
+		String encryptedString = encrypt(pw);		
+		// old value might be overwritten
 		storeToken(userid, encryptedString);
-		
-		return token;
+		return encryptedString;
 	}
 	
-	private void storeToken(int userid, String encryptedString) {
+	public String getTokenByID(String id) {
+		return tokenMap.get(id);
+//		String encrypted = tokenMap.get(id);
+//		return decrypt(encrypted);
+	}
+	
+	private void storeToken(String userid, String encryptedString) {
 		tokenMap.put(userid, encryptedString);
 	}
-
+	
+	private String encrypt(String pw) {
+		String encodedString = Base64.getEncoder().encodeToString(pw.getBytes());
+		return encodedString;		
+	}
+	
+	private String decrypt(String encodedString) {
+		byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
+		String decodedString = new String(decodedBytes);
+		
+		String msg = "token generation failed";
+		if(decodedString == null || decodedString == "") return msg;
+		return decodedString;
+	}
+	
 }

@@ -6,10 +6,10 @@ import de.htw.ai.kbe.data.Users;
 
 public interface IUsersDAO {
 	
-	public Users getUserByID(int id);
+	public Users getUserByID(String id);
 	public List<Users> getAllUsers();
 	public void saveUser();
 	public void deleteCUser();
-	public String getToken(String userid, String pw);
+	public boolean validateUser(String id, String pw);
 
 }
