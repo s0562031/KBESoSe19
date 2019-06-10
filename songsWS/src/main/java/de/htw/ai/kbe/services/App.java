@@ -12,7 +12,7 @@ import javax.xml.bind.JAXBException;
 
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.data.Userlist;
-import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.InMemorySongsDAO;
 
 public class App {
 		
@@ -20,7 +20,7 @@ public class App {
     // entspricht <persistence-unit name="songDB-PU" transaction-type="RESOURCE_LOCAL"> in persistence.xml
     private static final String PERSISTENCE_UNIT_NAME = "songDB-PU";
     
-    private static InMemorySongsDB inmemsongs = InMemorySongsDB.getInstance();
+    private static InMemorySongsDAO inmemsongs = InMemorySongsDAO.getInstance();
 
     //TODO EXCEPTIONS
     @SuppressWarnings("unchecked")
@@ -41,7 +41,7 @@ public class App {
         EntityManager em = factory.createEntityManager();
         
          
-        for(Songs entry : inmemsongs.getAllSongs()) {
+        for(Songs entry : inmemsongs.getAllSongsAsCollection()) {
         	System.out.println(entry.getTitle());
         	
         }
@@ -49,7 +49,7 @@ public class App {
         try {
             em.getTransaction().begin();
             
-            for(Songs s : inmemsongs.getAllSongs()) {
+            for(Songs s : inmemsongs.getAllSongsAsCollection()) {
             	em.persist(s);
             }
             

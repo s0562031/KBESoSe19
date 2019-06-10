@@ -2,8 +2,13 @@ package de.htw.ai.kbe.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-//import javax.inject.Singleton;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Singleton;
+
 //import javax.persistence.EntityManagerFactory;
 //import javax.persistence.Persistence;
 import javax.ws.rs.client.Entity;
@@ -11,43 +16,106 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.MediaType;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 //import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.glassfish.jersey.test.TestProperties;
+import org.json.simple.JSONObject;
 import org.junit.Test;
 
+
 import de.htw.ai.kbe.data.Songs;
-//import de.htw.ai.kbe.storage.ISongsDAO;
-import de.htw.ai.kbe.storage.SongsDBDAO;
+import de.htw.ai.kbe.storage.ISongsDAO;
+import de.htw.ai.kbe.storage.InMemorySongsDAO;
+import de.htw.ai.kbe.storage.InMemorySongsDB;
+
+import org.junit.Assert;
+import org.junit.Before;
+//import org.json.JSONObject;
 
 
-class SongsWebServiceTest extends JerseyTest {
+
+public class SongsWebServiceTest extends JerseyTest {
 	
-	 	//SongsDBDAO sDao;
-	 
-	    /*private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("songDB-PU");
+	 	//SongsDBDAO sDao;	 
+	    //private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("songDB-PU");
+		//private Songs mynewsong = null;
+
+	
 
 	    @Override
 	    public Application configure() {
 	    	return new ResourceConfig(SongsWebService.class).register(new AbstractBinder() {
 	            @Override
 	            protected void configure() {
-	                bind(emf).to(EntityManagerFactory.class);
-
-	                bind(SongsDBDAO.class)
-	                        .to(ISongsDAO.class)
-	                        .in(Singleton.class);
+	                bind(InMemorySongsDAO.class).to(ISongsDAO.class).in(Singleton.class);
 	            }
 	        });
-	    }*/
+	    }
+	    
+	    
+	    @Before
+	    public void setUp() {
+	    	
+//	    	mynewsong = new Songs();
+//	    	mynewsong.setAlbum("Testablum");
+//	    	mynewsong.setId(10);
+//	    	mynewsong.setArtist("Testartist");
+//	    	mynewsong.setRelease(1000);
+
+	    }
+	    
+//	    @Test
+//	    public void getSongOne() {
+//	    	
+//	    	Response resp = target("/songs/1").request().get();
+//	    	System.out.println(resp.toString());
+//	    }
+//	    
+//	    
+//	    
+//	    @Test
+//	    public void putSongShouldReturn204() {
+//
+//	        Songs song_two = new Songs.Builder("Test")
+//	                .artist("Test")
+//	                .album("Test")
+//	                .release(2016).build();
+//	        song_two.setId(10);
+//	    	
+//	    	Songs mynewsong = new Songs();
+//	    	mynewsong.setAlbum("Testablum");
+//	    	mynewsong.setId(10);
+//	    	mynewsong.setArtist("Testartist");
+//	    	mynewsong.setRelease(1000);
+//	    	
+//	    	Entity e = Entity.json(song_two);
+//	    	System.out.println(e);
+//	    	
+//	    	System.out.println(song_two.getTitle());
+//	    	
+//	    	Response response = target("/songs").request().put(e);
+//	    	System.out.println(response.toString());
+//	    	Map<String,List<Object>> headermap = (response.getHeaders());
+//	    	
+//	    	System.out.println(headermap.get("Content-Type"));
+//	    	System.out.println(headermap.get("Content-Type").get(0));
+//	    	assertEquals(headermap.get("Content-Type").get(0), MediaType.APPLICATION_JSON);
+//	    	
+//	    	
+//	    }
+	    
+	    
 	 	
+	    /*
 	 	@Override
 		public Application configure() {
 			enable(TestProperties.LOG_TRAFFIC);
 			enable(TestProperties.DUMP_ENTITY);
 			return new ResourceConfig(SongsWebService.class);
 		}
+		*/
 	 	/*
 	    @Test
 		public void getAllSongs_OK_Test() {

@@ -32,8 +32,9 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 import de.htw.ai.kbe.data.SongList;
 import de.htw.ai.kbe.data.Songs;
+import de.htw.ai.kbe.services.TokenHandler;
 import de.htw.ai.kbe.storage.ISongsDAO;
-import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.IUsersDAO;
 import de.htw.ai.kbe.storage.SongsDBDAO;
 
 // URL fuer diesen Service ist: 
@@ -48,11 +49,17 @@ public class SongsWebService {
     //private InMemorySongsDB addressBook = InMemorySongsDB.getInstance();
     //private SongsDBDAO sDAO= new SongsDBDAO();
     private ISongsDAO sDAO;
+    private IUsersDAO uDAO;
     
     @Inject
-    public SongsWebService(ISongsDAO sDAO) {
+    public SongsWebService(ISongsDAO sDAO, IUsersDAO uDAO) {
     	this.sDAO = sDAO;
+    	this.uDAO = uDAO;
     }
+    
+
+    
+    
     
     //GET http://localhost:8080/songsWS/rest/songs
 //	@GET 
@@ -66,10 +73,16 @@ public class SongsWebService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
 	public Response getAllSongs(@Context HttpHeaders headers) {
 		
-		String dbresponse = null;
-		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
+		System.out.println("################ " + headers.getRequestHeader("Authorization").get(0));
+		String authtoken = headers.getRequestHeader("Authorization").get(0);
+		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
 		
+		
+		String dbresponse = null;
+		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();		
 		List<Songs> responseSong = sDAO.getAllSongs();
+		
+		
 		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();
 		
 		// JSON is standard, if no or both types are given use it

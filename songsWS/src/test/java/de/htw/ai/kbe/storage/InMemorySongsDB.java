@@ -8,31 +8,20 @@ import java.util.concurrent.ConcurrentHashMap;
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.data.Userlist;
 
-public class InMemorySongsDB {
+public class InMemorySongsDB implements ISongsDAO {
 
-    private static InMemorySongsDB instance = null;
     
     private Map<Integer,Songs> songStorage;
     private Map<Integer,Userlist> userStorage;
     
-    private InMemorySongsDB () {
+    public InMemorySongsDB () {
     	songStorage = new ConcurrentHashMap<Integer,Songs>();
     	userStorage = new ConcurrentHashMap<Integer,Userlist>();
         initSomeSongs();
         initSomeUsers();
     }
     
-    public static InMemorySongsDB getInstance() {
-        if (instance == null) {
-            instance = new InMemorySongsDB();
-        }
-        return instance;
-    }
-    
-    public Collection<Songs> getAllSongs() {
-    	return songStorage.values();
-    }
-    
+        
     public Collection<Userlist> getAllUsers() {
     	return userStorage.values();
     }
@@ -120,6 +109,45 @@ public class InMemorySongsDB {
         
         songStorage.put(11, myfirstsong);      
     }
+
+	@Override
+	public Songs getSong(Integer id) {
+		return songStorage.get(id);
+	}
+	
+    @Override
+    public List<Songs> getAllSongs() {
+    	return (List<Songs>) songStorage.values();
+    }
+
+
+	@Override
+	public Integer addSong(Songs newsong) {
+		newsong.setId((int) songStorage.keySet().stream().count() +1);
+		songStorage.put(newsong.getId(), newsong);
+		return newsong.getId();
+	}
+
+	@Override
+	public boolean updateSong(Songs updatesong, Integer id) {
+		
+		if(songStorage.get(id) != null) {
+			
+			Songs songToUpdate = songStorage.get(id);
+			songToUpdate.setAlbum(updatesong.getAlbum());
+			songToUpdate.setRelease(updatesong.getRelease());
+			songToUpdate.setTitle(updatesong.getTitle());			
+			return true;
+		}
+		else return false;
+	}
+
+	@Override
+	public boolean deleteSong(int id) {
+		songStorage.remove(id);
+		if(songStorage.get(id) == null) return true;
+		else return false;
+	}
 
 
     

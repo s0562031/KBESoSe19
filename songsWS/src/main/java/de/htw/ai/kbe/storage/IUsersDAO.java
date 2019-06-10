@@ -11,5 +11,6 @@ public interface IUsersDAO {
 	public void saveUser();
 	public void deleteCUser();
 	public boolean validateUser(String id, String pw);
+	public boolean validateToken(String token);
 
 }

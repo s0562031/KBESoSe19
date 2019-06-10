@@ -18,16 +18,15 @@ import de.htw.ai.kbe.services.TokenHandler;
 public class UsersDBDAO implements IUsersDAO {
 	
     private EntityManagerFactory factory;
-    // bad should be DI
-    private TokenHandler tk = new TokenHandler();
+    private TokenHandler th;
 
     @Inject
-    public UsersDBDAO(EntityManagerFactory emf) {
+    public UsersDBDAO(EntityManagerFactory emf, TokenHandler th) {
         this.factory = emf;
+        this.th = th;
     }
     
  
-
 	@Override
 	public Userlist getUserByID(String id) {
 		
@@ -59,6 +58,11 @@ public class UsersDBDAO implements IUsersDAO {
 //		
 //	}
 	
+	public boolean validateToken(String token) {
+		if(th.findToken(token)) return true;
+		else return false;
+	}
+	
 	@Override
 	public boolean validateUser(String id, String pw) {
 		
@@ -66,6 +70,11 @@ public class UsersDBDAO implements IUsersDAO {
 		Userlist user = null;
 		Object result = null;
 		List<Userlist> userlist = null;
+		
+		StringBuilder reverse = new StringBuilder();
+		reverse.append(pw);
+		reverse.reverse();
+		pw = reverse.toString();
 		
 		try {
             em.getTransaction().begin();
@@ -96,7 +105,7 @@ public class UsersDBDAO implements IUsersDAO {
 		
 		//System.out.println(user.toString());
 		
-		System.out.println("###################" + user.getPassword() + "#############");
+		//System.out.println("###################" + user.getPassword() + "#############");
 		//if(result != null && result.toString().equals(pw)) return true;
 		if(user != null && user.getUserId().contentEquals(id) && user.getPassword().contentEquals(pw)) return true;
 		else return false;

@@ -4,11 +4,13 @@ package de.htw.ai.kbe.services;
 import java.util.Base64;
 import java.util.HashMap;
 
+import javax.inject.Singleton;
 
+@Singleton
 public class TokenHandler {
 	
 
-	private HashMap<String, String> tokenMap;
+	private HashMap<String, String> tokenMap = new HashMap<String, String>();
 	
 	public TokenHandler() {
 		tokenMap = new HashMap<String,String>();
@@ -29,13 +31,18 @@ public class TokenHandler {
 //		return decrypt(encrypted);
 	}
 	
+	
 	public boolean findToken(String token) {
-		if(tokenMap.containsValue(token)) return true;
+		System.out.println("Looking for: " + token);
+		System.out.println("Having token for password123: " + tokenMap.get("password123"));
+		if(tokenMap.containsKey(token)) return true;
 		else return false;
 	}
 	
 	private void storeToken(String userid, String encryptedString) {
+		
 		tokenMap.put(userid, encryptedString);
+		System.out.println("Token " + tokenMap.get(userid) + " stored.");
 	}
 	
 	private String encrypt(String pw) {
