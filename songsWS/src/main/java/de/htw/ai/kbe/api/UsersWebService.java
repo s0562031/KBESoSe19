@@ -24,7 +24,7 @@ import de.htw.ai.kbe.storage.IUsersDAO;
 public class UsersWebService {
 	
     private IUsersDAO uDAO;
-    private TokenHandler tk = new TokenHandler();
+    private TokenHandler th = TokenHandler.getInstance();
     
     @Inject
     public UsersWebService(IUsersDAO uDAO) {
@@ -44,7 +44,9 @@ public class UsersWebService {
 			String token = "empty token";
 			
 			if(uDAO.validateUser(userid, pw)) {
-				token = tk.generateToken(userid, pw);
+				token = th.generateToken(userid, pw);
+				System.out.println("User " + userid  + " validated. Token: "  + token + " generated.");
+				uDAO.storeToken(userid, token);
 			} else return Response.status(Response.Status.BAD_REQUEST).entity("No user with this userid and password found.").header("Content-Type", "text/plain").build();
 			
 			

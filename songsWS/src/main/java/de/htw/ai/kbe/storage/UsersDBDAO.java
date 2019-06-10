@@ -18,12 +18,11 @@ import de.htw.ai.kbe.services.TokenHandler;
 public class UsersDBDAO implements IUsersDAO {
 	
     private EntityManagerFactory factory;
-    private TokenHandler th;
+    //private TokenHandler th = TokenHandler.getInstance();
 
     @Inject
-    public UsersDBDAO(EntityManagerFactory emf, TokenHandler th) {
+    public UsersDBDAO(EntityManagerFactory emf) {
         this.factory = emf;
-        this.th = th;
     }
     
  
@@ -58,9 +57,47 @@ public class UsersDBDAO implements IUsersDAO {
 //		
 //	}
 	
+//	public boolean validateToken(String token) {
+//		if(th.findToken(token)) return true;
+//		else return false;
+//	}
+	
+	@Override
 	public boolean validateToken(String token) {
-		if(th.findToken(token)) return true;
+	
+		EntityManager em = factory.createEntityManager();
+		String gettoken = "";
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("SELECT token FROM Userlist u WHERE u.token = '" + token + "'", String.class);
+            
+//            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = :userid AND u.password = :password", Users.class)
+//            		.setParameter("userid", id)
+//            		.setParameter("password", pw); 
+            
+         
+            gettoken =  (String) q.getSingleResult();
+            
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
+		
+		if(token.equals(gettoken)) return true;
 		else return false;
+
 	}
 	
 	@Override
@@ -150,6 +187,40 @@ public class UsersDBDAO implements IUsersDAO {
 	@Override
 	public void deleteCUser() {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void storeToken(String userid, String token) {
+		
+		EntityManager em = factory.createEntityManager();		
+
+		try {
+            em.getTransaction().begin();
+            //UPDATE films SET kind = 'Dramatic' WHERE kind = 'Drama';
+            Query q = em.createQuery("UPDATE Userlist u SET u.token = '" + token + "' WHERE u.userid = '" + userid + "'");
+            
+//            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = :userid AND u.password = :password", Users.class)
+//            		.setParameter("userid", id)
+//            		.setParameter("password", pw); 
+            
+        
+          
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
 		
 	}
 

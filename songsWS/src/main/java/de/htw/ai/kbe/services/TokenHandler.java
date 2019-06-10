@@ -9,11 +9,14 @@ import javax.inject.Singleton;
 @Singleton
 public class TokenHandler {
 	
-
-	private HashMap<String, String> tokenMap = new HashMap<String, String>();
+	private static TokenHandler th = new TokenHandler();
+	private static HashMap<String, String> tokenMap = new HashMap<String,String>();
 	
-	public TokenHandler() {
-		tokenMap = new HashMap<String,String>();
+	private TokenHandler() {
+	}
+	
+	public static TokenHandler getInstance() {
+		return th;
 	}
 	
 	

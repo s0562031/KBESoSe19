@@ -50,6 +50,7 @@ public class SongsWebService {
     //private SongsDBDAO sDAO= new SongsDBDAO();
     private ISongsDAO sDAO;
     private IUsersDAO uDAO;
+    private TokenHandler th = TokenHandler.getInstance();
     
     @Inject
     public SongsWebService(ISongsDAO sDAO, IUsersDAO uDAO) {
@@ -73,10 +74,14 @@ public class SongsWebService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
 	public Response getAllSongs(@Context HttpHeaders headers) {
 		
-		System.out.println("################ " + headers.getRequestHeader("Authorization").get(0));
-		String authtoken = headers.getRequestHeader("Authorization").get(0);
-		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
+		//System.out.println("################ " + headers.getRequestHeader("Authorization").get(0));
+		String authtoken = "";
+		if(headers.getRequestHeader("Authorization") != null) {
+			authtoken = headers.getRequestHeader("Authorization").get(0);
+		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
 		
+		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
+
 		
 		String dbresponse = null;
 		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();		

@@ -29,16 +29,19 @@ public class Userlist {
     private String lastName;
     
     private String password;
+    
+    private String token;
 
     // noetig
     public Userlist() {
     }
 
-    public Userlist(String userId, String firstName, String lastName, String password) {
+    public Userlist(String userId, String firstName, String lastName, String password, String token) {
         this.userid = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.token = token;
     }
     
 	public Userlist(Builder build) {
@@ -46,6 +49,7 @@ public class Userlist {
 		this.password = build.password;
 		this.firstName = build.firstName;
 		this.lastName = build.lastName;
+		this.token = build.token;
 	}
 
 
@@ -72,7 +76,7 @@ public class Userlist {
     @Override
     public String toString() {
         return "User [userId=" + userid + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", password=" + password + "]";
+                + ", password=" + password + " token= " + token + "]";
     }
     
     public static class Builder {
@@ -82,6 +86,7 @@ public class Userlist {
 		private String password;
 		private String firstName;
 		private String lastName;
+		private String token;
 
 		public Builder(String userId, String password) {
 			this.userId = userId;
@@ -103,9 +108,16 @@ public class Userlist {
 			return this;
 		}
 		
+		public Builder token(String val) {
+			token = val;
+			return this;
+		}
+		
 		public Userlist build() {
 			return new Userlist(this);
 		}
+		
+
 
 	}
 }

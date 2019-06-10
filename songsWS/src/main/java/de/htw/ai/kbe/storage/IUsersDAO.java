@@ -11,6 +11,8 @@ public interface IUsersDAO {
 	public void saveUser();
 	public void deleteCUser();
 	public boolean validateUser(String id, String pw);
-	public boolean validateToken(String token);
+	//public boolean validateToken(String token);
+	public void storeToken(String userid, String token);
+	public boolean validateToken(String authtoken);
 
 }
