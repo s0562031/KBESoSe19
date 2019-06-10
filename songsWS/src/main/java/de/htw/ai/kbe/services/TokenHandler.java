@@ -29,6 +29,11 @@ public class TokenHandler {
 //		return decrypt(encrypted);
 	}
 	
+	public boolean findToken(String token) {
+		if(tokenMap.containsValue(token)) return true;
+		else return false;
+	}
+	
 	private void storeToken(String userid, String encryptedString) {
 		tokenMap.put(userid, encryptedString);
 	}
