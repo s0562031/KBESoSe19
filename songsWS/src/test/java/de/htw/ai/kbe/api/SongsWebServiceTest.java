@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Singleton;
-
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 //import javax.persistence.EntityManagerFactory;
 //import javax.persistence.Persistence;
 import javax.ws.rs.client.Entity;
@@ -30,6 +31,7 @@ import de.htw.ai.kbe.storage.ISongsDAO;
 import de.htw.ai.kbe.storage.IUsersDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.UsersDBDAO;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -50,7 +52,9 @@ public class SongsWebServiceTest extends JerseyTest {
 	    	return new ResourceConfig(SongsWebService.class).register(new AbstractBinder() {
 	            @Override
 	            protected void configure() {
-	                bind(InMemorySongsDB.class).to(ISongsDAO.class).to(IUsersDAO.class).in(Singleton.class);
+	            	bind(Persistence.createEntityManagerFactory("songDB-PU")).to(EntityManagerFactory.class);
+	                bind(InMemorySongsDB.class).to(ISongsDAO.class).in(Singleton.class);
+	                bind(UsersDBDAO.class).to(IUsersDAO.class);
 	            }
 	        });
 	    }
