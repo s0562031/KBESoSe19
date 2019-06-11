@@ -54,7 +54,7 @@ public class SongsWebServiceTest extends JerseyTest {
 	            @Override
 	            protected void configure() {
 	            	bind(Persistence.createEntityManagerFactory("songDB-PU")).to(EntityManagerFactory.class);
-	                bind(SongsDBDAO.class).to(ISongsDAO.class).in(Singleton.class);
+	                bind(InMemorySongsDB.class).to(ISongsDAO.class).in(Singleton.class);
 	                bind(UsersDBDAO.class).to(IUsersDAO.class);
 	            }
 	        });
@@ -67,7 +67,7 @@ public class SongsWebServiceTest extends JerseyTest {
 //	    	InMemorySongsDB inmem = new InMemorySongsDB();
 //	    	System.out.println(inmem.getAllSongs());
 	    	
-	    	Response resp = target("/songsWS/rest/songs/114").request().header("Authorization", "MzIxZHJvd3NzYXA=").get();
+	    	Response resp = target("/songs/4").request().header("Authorization", "MzIxZHJvd3NzYXA=").header("Accept", "application/json").get();
 	    	System.out.println(resp.toString());
 	    }
    
