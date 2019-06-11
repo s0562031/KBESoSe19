@@ -2,10 +2,6 @@ package de.htw.ai.kbe.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManagerFactory;
@@ -21,32 +17,23 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 //import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.TestProperties;
-import org.json.simple.JSONObject;
 import org.junit.Test;
 
 
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.storage.ISongsDAO;
 import de.htw.ai.kbe.storage.IUsersDAO;
-import de.htw.ai.kbe.storage.InMemorySongsDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
 import de.htw.ai.kbe.storage.SongsDBDAO;
 import de.htw.ai.kbe.storage.UsersDBDAO;
 
-import org.junit.Assert;
-import org.junit.Before;
-//import org.json.JSONObject;
-
-
 
 public class SongsWebServiceTest extends JerseyTest {
 	
-	 	//SongsDBDAO sDao;	 
-	    //private static EntityManagerFactory emf = Persistence.createEntityManagerFactory("songDB-PU");
-		//private Songs mynewsong = null;
-
-	
+	    private String tk = "MzIxZHdzc2Fw";
+	    private String jsonHeader = "application/json";
+	    private String xmlHeader = "application/xml";
+	    private String plainHeader = "text/plain";
 
 	    @Override
 	    public Application configure() {
@@ -60,15 +47,16 @@ public class SongsWebServiceTest extends JerseyTest {
 	        });
 	    }
 	    
-	    
 	    @Test
-	    public void getSongOne() {
+		public void getAllSongs_OK_ShouldReturn200() {
 	    	
-//	    	InMemorySongsDB inmem = new InMemorySongsDB();
-//	    	System.out.println(inmem.getAllSongs());
-	    	
-	    	Response resp = target("/songs/4").request().header("Authorization", "MzIxZHJvd3NzYXA=").header("Accept", "application/json").get();
-	    	System.out.println(resp.toString());
+	    	Response response = target("/songs/").request().header("Authorization", tk).header("Accept", jsonHeader).get();
+			assertEquals("should return status 200", Response.Status.OK.getStatusCode(), response.getStatus());
+			assertNotNull("Should return song list as json", response.getEntity().toString());
+			
+			//System.out.println(response.toString());
+			//System.out.println(response.getStatus());
+			//System.out.println(response.readEntity(String.class));
 	    }
    
 //	    @Test
@@ -101,52 +89,61 @@ public class SongsWebServiceTest extends JerseyTest {
 //	    	
 //	    	
 //	    }
+
 	    
+	    /*@Test
+	    public void getAllSongs_XML_OK_ShouldReturnXML() {
+	        String response = target("/songs/").request().header("Authorization", tk).header("Accept", xmlHeader).get(String.class);       
+	        //assertTrue(response.startsWith("<?xml"));
+	        
+	          System.out.println(response.toString());
+	    }*/
+
 	    
-	 	
-	    /*
-	 	@Override
-		public Application configure() {
-			enable(TestProperties.LOG_TRAFFIC);
-			enable(TestProperties.DUMP_ENTITY);
-			return new ResourceConfig(SongsWebService.class);
-		}
-		*/
-	 	/*
 	    @Test
-		public void getAllSongs_OK_Test() {
+		public void getAllSongs_UnacceptableHeader_ShouldReturn406() {
 	    	
-	    	Response response = target("/songs/").request().get();
-			assertEquals("should return status 200", Response.Status.OK.getStatusCode(), response.getStatus());
-			assertNotNull("Should return song list as json", response.getEntity().toString());
+	    	Response response = target("/songs/").request().header("Authorization", tk).header("Accept", plainHeader).get();
+			assertEquals("should return status 406", Response.Status.NOT_ACCEPTABLE.getStatusCode(), response.getStatus());
 			
-			System.out.println(response.getStatus());
-			System.out.println(response.readEntity(String.class));
+			//System.out.println(response.toString());
+			//System.out.println(response.getStatus());
     	}
 	    
 	    @Test
-		public void getSong_Exists_Test() {
+		public void getAllSongs_NoAuthorisation_ShouldReturn404() {
 	    	
-			Response response = target("/songs/1").request().get();
+	    	Response response = target("/songs/").request().header("Accept", jsonHeader).get();
+			assertEquals("should return status 404", Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+			
+			//System.out.println(response.toString());
+			//System.out.println(response.getStatus());
+    	}
+	    
+	    @Test
+		public void getSong_Exists_ShouldReturn200() {
+	    	
+	    	Response response = target("/songs/1").request().header("Authorization", tk).header("Accept", jsonHeader).get();
 			assertEquals("Should return status 200", Response.Status.OK.getStatusCode(), response.getStatus());
 			assertNotNull("Should return song object as json", response.getEntity());
 			
-			System.out.println(response.getStatus());
-			System.out.println(response.readEntity(String.class));
+			//System.out.println(response.toString());
+			//System.out.println(response.getStatus());
+			//System.out.println(response.readEntity(String.class));
 		}
 	    
 	    @Test
-		public void getSong_NotExists_Test() {
+		public void getSong_NotExists_ShouldReturn404() {
 	    	
-			Response response = target("/songs/1000").request().get();
+	    	Response response = target("/songs/1000").request().header("Authorization", tk).header("Accept", jsonHeader).get();
 			assertEquals("Should return status 404", Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 			
-			System.out.println(response.getStatus());
+			//System.out.println(response.toString());
+			//System.out.println(response.getStatus());
 		}
 	    
-	    
 	    @Test
-		public void createSong_BadMediaType_Test() {
+		public void createSong_JSON_ShouldReturn201AndId() {
 	    	
 	    	// Generate entity
 	        Songs song = new Songs();
@@ -155,14 +152,31 @@ public class SongsWebServiceTest extends JerseyTest {
 	        song.setArtist("testartist");
 	        song.setRelease(2000);
 			
-			Response response = target("/songs/").request().post(Entity.entity(song, MediaType.TEXT_HTML));
-			assertEquals("Should return status 415", Response.Status.UNSUPPORTED_MEDIA_TYPE.getStatusCode(), response.getStatus());
-			
-			System.out.println(response.getStatus());			
+			Response response = target("/songs/").request().header("Authorization", tk).post(Entity.entity(song, MediaType.APPLICATION_JSON));
+			assertEquals("Should return status 201", Response.Status.CREATED.getStatusCode(), response.getStatus());
+			//assertTrue(response.getLocation().toString().endsWith("2"));
+			//System.out.println(response.getStatus());			
 		}
-
-		@Test
-	    public void updateSong_Exists_Test() {
+	    
+	    @Test
+		public void createSong_XML_ShouldReturn201AndId() {
+	    	
+	    	// Generate entity
+	        Songs song = new Songs();
+	        song.setTitle("testtitle");
+	        song.setAlbum("testalbum");
+	        song.setArtist("testartist");
+	        song.setRelease(2000);
+			
+			Response response = target("/songs/").request().header("Authorization", tk).post(Entity.entity(song, MediaType.APPLICATION_XML));
+			assertEquals("Should return status 201", Response.Status.CREATED.getStatusCode(), response.getStatus());
+			//assertTrue(response.getLocation().toString().endsWith("3"));
+			
+			//System.out.println(response.getStatus());			
+		}
+	    
+	    @Test
+	    public void updateSong_Exists_ShouldReturn204() {
 	        //sDao = new SongsDBDAO(emf);
 
 	        // Generate entity
@@ -173,15 +187,15 @@ public class SongsWebServiceTest extends JerseyTest {
 	        song.setRelease(2000);
 
 	        // send PUT request with JSON entity to REST path
-	        Response response = target("songs/5").request().put(Entity.json(song));
+	        Response response = target("songs/1").request().header("Authorization", tk).put(Entity.json(song));
 	        assertEquals("Should return status 204", Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 	        
-	        System.out.println(response.getStatus());
+	        //System.out.println(response.getStatus());
 
 	    }
-		
-		 @Test
-		 public void updateSong_NotExists_Test() {
+	    
+	    @Test
+		 public void updateSong_NotExists_ShouldReturn404() {
 
 			 // Generate entity
 			 Songs song = new Songs();
@@ -190,26 +204,26 @@ public class SongsWebServiceTest extends JerseyTest {
 		     song.setArtist("testartist");
 		     song.setRelease(2000);
 
-		     Response response = target("songs/100").request().put(Entity.json(song));
+		     Response response = target("songs/100").request().header("Authorization", tk).put(Entity.json(song));
 		     assertEquals("Should return status 404", Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 		     
-		     System.out.println(response.getStatus());
+		     //System.out.println(response.getStatus());
 		 }
-		 
-		 
-		 @Test
-		 public void deleteSong_Exists_Test() {
-			  Response response = target("/songs/1").request().delete();
+		
+	     @Test
+		 public void deleteSong_Exists_ShouldReturn204() {
+			  Response response = target("/songs/3").request().header("Authorization", tk).delete();
 			  assertEquals("Should return status 204", Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 			  
-			  System.out.println(response.getStatus());
+			  //System.out.println(response.getStatus());
 		 }
 		 
 		 @Test
-		 public void deleteSong_NotExists_Test() {
-			  Response response = target("/songs/1000").request().delete();
+		 public void deleteSong_NotExists_ShouldReturn404() {
+			  Response response = target("/songs/1000").request().header("Authorization", tk).delete();
 			  assertEquals("Should return status 404", Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 			  
-			  System.out.println(response.getStatus());
-		 } */
+			  //System.out.println(response.getStatus());
+		 }
+	    
 }
