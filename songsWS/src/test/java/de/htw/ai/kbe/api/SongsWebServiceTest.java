@@ -2,11 +2,6 @@ package de.htw.ai.kbe.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.net.http.HttpHeaders;
-import java.util.List;
-import java.util.Map;
 
 import javax.inject.Singleton;
 import javax.persistence.EntityManagerFactory;
@@ -22,23 +17,14 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 //import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
-import org.glassfish.jersey.test.TestProperties;
-import org.json.simple.JSONObject;
 import org.junit.Test;
 
 
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.storage.ISongsDAO;
 import de.htw.ai.kbe.storage.IUsersDAO;
-import de.htw.ai.kbe.storage.InMemorySongsDAO;
-import de.htw.ai.kbe.storage.InMemorySongsDB;
 import de.htw.ai.kbe.storage.SongsDBDAO;
 import de.htw.ai.kbe.storage.UsersDBDAO;
-
-import org.junit.Assert;
-import org.junit.Before;
-//import org.json.JSONObject;
-
 
 
 public class SongsWebServiceTest extends JerseyTest {
@@ -71,6 +57,38 @@ public class SongsWebServiceTest extends JerseyTest {
 			//System.out.println(response.getStatus());
 			//System.out.println(response.readEntity(String.class));
     	}
+   
+//	    @Test
+//	    public void putSongShouldReturn204() {
+//
+//	        Songs song_two = new Songs.Builder("Test")
+//	                .artist("Test")
+//	                .album("Test")
+//	                .release(2016).build();
+//	        song_two.setId(10);
+//	    	
+//	    	Songs mynewsong = new Songs();
+//	    	mynewsong.setAlbum("Testablum");
+//	    	mynewsong.setId(10);
+//	    	mynewsong.setArtist("Testartist");
+//	    	mynewsong.setRelease(1000);
+//	    	
+//	    	Entity e = Entity.json(song_two);
+//	    	System.out.println(e);
+//	    	
+//	    	System.out.println(song_two.getTitle());
+//	    	
+//	    	Response response = target("/songs").request().put(e);
+//	    	System.out.println(response.toString());
+//	    	Map<String,List<Object>> headermap = (response.getHeaders());
+//	    	
+//	    	System.out.println(headermap.get("Content-Type"));
+//	    	System.out.println(headermap.get("Content-Type").get(0));
+//	    	assertEquals(headermap.get("Content-Type").get(0), MediaType.APPLICATION_JSON);
+//	    	
+//	    	
+//	    }
+
 	    
 	    /*@Test
 	    public void getAllSongs_XML_OK_ShouldReturnXML() {
