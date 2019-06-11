@@ -66,12 +66,12 @@ public class SongsWebServiceTest extends JerseyTest {
 
 	    }
 	    
-//	    @Test
-//	    public void getSongOne() {
-//	    	
-//	    	Response resp = target("/songs/1").request().get();
-//	    	System.out.println(resp.toString());
-//	    }
+	    @Test
+	    public void getSongOne() {
+	    	
+	    	Response resp = target("/songs/1").request().get();
+	    	System.out.println(resp.toString());
+	    }
 //	    
 //	    
 //	    

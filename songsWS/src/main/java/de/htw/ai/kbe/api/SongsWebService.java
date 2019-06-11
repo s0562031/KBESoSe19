@@ -118,13 +118,20 @@ public class SongsWebService {
 		
 		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
 	}
-
+ 
     //GET http://localhost:8080/songsWS/rest/songs/1
 	//Returns: 200 & contact with id 1 or 404 when id not found, 
 	@GET
 	@Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  })
 	public Response getSong(@PathParam("id") Integer id, @Context HttpHeaders headers) {
+	 
+		String authtoken = "";
+	 	if(headers.getRequestHeader("Authorization") != null) {
+			authtoken = headers.getRequestHeader("Authorization").get(0);
+		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+		
+		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
 		
 		String dbresponse = null;
 		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();
@@ -181,7 +188,14 @@ public class SongsWebService {
 	@POST
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response createSong(Songs song) {
+	public Response createSong(Songs song, @Context HttpHeaders headers) {
+		
+		String authtoken = "";
+	 	if(headers.getRequestHeader("Authorization") != null) {
+			authtoken = headers.getRequestHeader("Authorization").get(0);
+		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+		
+		
 	     Integer newId = sDAO.addSong(song);
 	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
 	     uriBuilder.path(Integer.toString(newId));
@@ -191,7 +205,13 @@ public class SongsWebService {
 	@PUT
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Path("/{id}")
-    public Response updateSong(@PathParam("id") Integer id, Songs song) {
+    public Response updateSong(@PathParam("id") Integer id, Songs song, @Context HttpHeaders headers) {
+		
+		String authtoken = "";
+	 	if(headers.getRequestHeader("Authorization") != null) {
+			authtoken = headers.getRequestHeader("Authorization").get(0);
+		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+		
 		
 		if ((sDAO.updateSong(song, id))){
             return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " updated.").build();
@@ -202,7 +222,13 @@ public class SongsWebService {
 
 	@DELETE
 	@Path("/{id}")
-	public Response deleteSong(@PathParam("id") Integer id) {
+	public Response deleteSong(@PathParam("id") Integer id, @Context HttpHeaders headers) {
+		
+		String authtoken = "";
+	 	if(headers.getRequestHeader("Authorization") != null) {
+			authtoken = headers.getRequestHeader("Authorization").get(0);
+		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+		
 		
 		if (sDAO.deleteSong(id)) {
             return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();

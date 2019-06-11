@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 
 import de.htw.ai.kbe.data.Songs;
@@ -45,9 +46,32 @@ public class App {
         	System.out.println(entry.getTitle());
         	
         }
+        
+//        try {
+//            em.getTransaction().begin();
+//            
+//            em.createQuery("DELETE FROM Songs");
+//            em.createQuery("DELETE FROM Userlist");            
+//            
+//            // commit transaction
+//            em.getTransaction().commit();
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            em.getTransaction().rollback();
+//        } finally {
+//            // EntityManager nach Datenbankaktionen wieder freigeben
+//            em.close();
+//            // Freigabe am Ende der Applikation
+//            //factory.close();
+//        }
+//        
+//        em = factory.createEntityManager();
+
 
         try {
             em.getTransaction().begin();
+                       
             
             for(Songs s : inmemsongs.getAllSongsAsCollection()) {
             	em.persist(s);

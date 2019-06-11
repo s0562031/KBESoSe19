@@ -73,7 +73,31 @@ public class Userlist {
         return password;
     }
 
-    @Override
+    public String getUserid() {
+		return userid;
+	}
+
+	public void setUserid(String userid) {
+		this.userid = userid;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Override
     public String toString() {
         return "User [userId=" + userid + ", firstName=" + firstName + ", lastName=" + lastName
                 + ", password=" + password + " token= " + token + "]";

@@ -9,8 +9,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
-
+import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.data.Userlist;
 import de.htw.ai.kbe.services.TokenHandler;
 
@@ -191,23 +192,27 @@ public class UsersDBDAO implements IUsersDAO {
 	}
 
 
+	
 	@Override
 	public void storeToken(String userid, String token) {
 		
 		EntityManager em = factory.createEntityManager();		
 
 		try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             //UPDATE films SET kind = 'Dramatic' WHERE kind = 'Drama';
-            Query q = em.createQuery("UPDATE Userlist u SET u.token = '" + token + "' WHERE u.userid = '" + userid + "'");
+            //em.createQuery("UPDATE Userlist SET token = '" + token + "' WHERE userid = '" + userid + "'");
             
-//            Query q = em.createQuery("SELECT * FROM userlist u WHERE u.userid = :userid AND u.password = :password", Users.class)
-//            		.setParameter("userid", id)
-//            		.setParameter("password", pw); 
+            Userlist user;
             
-        
+			if ((user = em.find(Userlist.class, userid)) != null) {
+	            em.getTransaction().begin();
+	            user.setToken(token);                              
+	            em.getTransaction().commit();
+			} else System.out.println("User wasnt found.");
           
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
+            System.out.println("Token:" + token + " written for User: " + userid);
 
         } catch (NoResultException e) {
         	System.out.println("no result exception");

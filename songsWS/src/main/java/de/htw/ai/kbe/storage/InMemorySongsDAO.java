@@ -35,12 +35,16 @@ public class InMemorySongsDAO implements ISongsDAO {
     
     private void initSomeUsers() {
     	
-    	Userlist myfirstuser = new Userlist.Builder("mmuster","321drowssap")
+    	Userlist myfirstuser = new Userlist.Builder("mmuster","password123")
     			.firstname("Maxime")
-    			.lastname("Muster").build();
-    	Userlist myseconduser = new Userlist.Builder("eschueler","321drowssap")
+    			.lastname("Muster")
+    			.token("")
+    			.build();
+    	
+    	Userlist myseconduser = new Userlist.Builder("eschueler","password123")
     			.firstname("Elena")
-    			.lastname("Schuler").build();
+    			.lastname("Schuler")
+    			.token("").build();
     	
     	userStorage.put(1,myfirstuser);
     	userStorage.put(2,myseconduser);
