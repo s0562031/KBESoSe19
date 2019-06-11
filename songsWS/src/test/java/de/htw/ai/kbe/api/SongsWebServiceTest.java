@@ -27,6 +27,7 @@ import org.junit.Test;
 
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.storage.ISongsDAO;
+import de.htw.ai.kbe.storage.IUsersDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
 
@@ -49,22 +50,11 @@ public class SongsWebServiceTest extends JerseyTest {
 	    	return new ResourceConfig(SongsWebService.class).register(new AbstractBinder() {
 	            @Override
 	            protected void configure() {
-	                bind(InMemorySongsDAO.class).to(ISongsDAO.class).in(Singleton.class);
+	                bind(InMemorySongsDAO.class).to(ISongsDAO.class).to(IUsersDAO.class).in(Singleton.class);
 	            }
 	        });
 	    }
 	    
-	    
-	    @Before
-	    public void setUp() {
-	    	
-//	    	mynewsong = new Songs();
-//	    	mynewsong.setAlbum("Testablum");
-//	    	mynewsong.setId(10);
-//	    	mynewsong.setArtist("Testartist");
-//	    	mynewsong.setRelease(1000);
-
-	    }
 	    
 	    @Test
 	    public void getSongOne() {
