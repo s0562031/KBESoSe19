@@ -31,6 +31,7 @@ import de.htw.ai.kbe.storage.ISongsDAO;
 import de.htw.ai.kbe.storage.IUsersDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.SongsDBDAO;
 import de.htw.ai.kbe.storage.UsersDBDAO;
 
 import org.junit.Assert;
@@ -53,7 +54,7 @@ public class SongsWebServiceTest extends JerseyTest {
 	            @Override
 	            protected void configure() {
 	            	bind(Persistence.createEntityManagerFactory("songDB-PU")).to(EntityManagerFactory.class);
-	                bind(InMemorySongsDB.class).to(ISongsDAO.class).in(Singleton.class);
+	                bind(SongsDBDAO.class).to(ISongsDAO.class).in(Singleton.class);
 	                bind(UsersDBDAO.class).to(IUsersDAO.class);
 	            }
 	        });
@@ -63,12 +64,13 @@ public class SongsWebServiceTest extends JerseyTest {
 	    @Test
 	    public void getSongOne() {
 	    	
-	    	Response resp = target("/songs/1").request().get();
+//	    	InMemorySongsDB inmem = new InMemorySongsDB();
+//	    	System.out.println(inmem.getAllSongs());
+	    	
+	    	Response resp = target("/songsWS/rest/songs/114").request().header("Authorization", "MzIxZHJvd3NzYXA=").get();
 	    	System.out.println(resp.toString());
 	    }
-//	    
-//	    
-//	    
+   
 //	    @Test
 //	    public void putSongShouldReturn204() {
 //
