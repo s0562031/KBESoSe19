@@ -50,7 +50,7 @@ public class SongsWebServiceTest extends JerseyTest {
 	    	return new ResourceConfig(SongsWebService.class).register(new AbstractBinder() {
 	            @Override
 	            protected void configure() {
-	                bind(InMemorySongsDAO.class).to(ISongsDAO.class).to(IUsersDAO.class).in(Singleton.class);
+	                bind(InMemorySongsDB.class).to(ISongsDAO.class).to(IUsersDAO.class).in(Singleton.class);
 	            }
 	        });
 	    }
