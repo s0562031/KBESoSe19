@@ -16,9 +16,13 @@
             <property name="javax.persistence.jdbc.user" value="_s0562031__newnewsongsdb_generic "/>
             <property name="javax.persistence.jdbc.password" value="dbuserpw"/> -->
             
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/uni"/>
+<!--             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/uni"/>
             <property name="javax.persistence.jdbc.user" value="postgres"/>
-            <property name="javax.persistence.jdbc.password" value="123456789"/>
+            <property name="javax.persistence.jdbc.password" value="123456789"/> -->
+            
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/songsdb"/>
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="dbuserpw"/>
 
             <!--Hibernate properties-->
             <property name="hibernate.show_sql" value="true"/>

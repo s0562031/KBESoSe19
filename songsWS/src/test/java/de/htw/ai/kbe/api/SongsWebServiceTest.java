@@ -187,7 +187,7 @@ public class SongsWebServiceTest extends JerseyTest {
 	        song.setRelease(2000);
 
 	        // send PUT request with JSON entity to REST path
-	        Response response = target("songs/1").request().header("Authorization", tk).put(Entity.json(song));
+	        Response response = target("/songs/1").request().header("Authorization", tk).put(Entity.json(song));
 	        assertEquals("Should return status 204", Response.Status.NO_CONTENT.getStatusCode(), response.getStatus());
 	        
 	        //System.out.println(response.getStatus());
@@ -204,7 +204,7 @@ public class SongsWebServiceTest extends JerseyTest {
 		     song.setArtist("testartist");
 		     song.setRelease(2000);
 
-		     Response response = target("songs/100").request().header("Authorization", tk).put(Entity.json(song));
+		     Response response = target("/songs/100").request().header("Authorization", tk).put(Entity.json(song));
 		     assertEquals("Should return status 404", Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
 		     
 		     //System.out.println(response.getStatus());

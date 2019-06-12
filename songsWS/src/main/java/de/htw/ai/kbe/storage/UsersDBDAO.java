@@ -86,6 +86,7 @@ public class UsersDBDAO implements IUsersDAO {
         } catch (NoResultException e) {
         	System.out.println("no result exception");
         	e.printStackTrace();
+        	em.getTransaction().rollback();
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
