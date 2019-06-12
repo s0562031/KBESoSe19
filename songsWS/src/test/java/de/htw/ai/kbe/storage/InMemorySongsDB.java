@@ -148,8 +148,9 @@ public class InMemorySongsDB implements ISongsDAO {
 
 	@Override
 	public boolean deleteSong(int id) {
-		songStorage.remove(id);
-		return true;
+		Songs del = songStorage.remove(id);
+		if(del == null) return false;
+		else return true;
 	}
 
 

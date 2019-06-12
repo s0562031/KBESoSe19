@@ -75,7 +75,7 @@ public class SongsWebService {
 	public Response getAllSongs(@Context HttpHeaders headers) {
 		
 		//System.out.println("################ " + headers.getRequestHeader("Authorization").get(0));
-		String authtoken = "";
+		String authtoken = "thisisnotatoken";
 		if(headers.getRequestHeader("Authorization") != null) {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
@@ -126,7 +126,7 @@ public class SongsWebService {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  })
 	public Response getSong(@PathParam("id") Integer id, @Context HttpHeaders headers) {
 	 
-		String authtoken = "";
+		String authtoken = "thisisnotatoken";
 	 	if(headers.getRequestHeader("Authorization") != null) {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
@@ -190,7 +190,7 @@ public class SongsWebService {
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response createSong(Songs song, @Context HttpHeaders headers) {
 		
-		String authtoken = "";
+		String authtoken = "thisisnotatoken";
 	 	if(headers.getRequestHeader("Authorization") != null) {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
@@ -228,7 +228,7 @@ public class SongsWebService {
 	@Path("/{id}")
 	public Response deleteSong(@PathParam("id") Integer id, @Context HttpHeaders headers) {
 		
-		String authtoken = "";
+		String authtoken = "thisisnotatoken";
 	 	if(headers.getRequestHeader("Authorization") != null) {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
