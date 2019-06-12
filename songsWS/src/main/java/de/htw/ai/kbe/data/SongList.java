@@ -8,10 +8,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement(name = "songlist")
+@XmlRootElement(name = "songs")
 public class SongList {
 	
-	@XmlElement(name = "songelem")
+	@XmlElement(name = "song")
 	private List<Songs> songs;
 	
 
