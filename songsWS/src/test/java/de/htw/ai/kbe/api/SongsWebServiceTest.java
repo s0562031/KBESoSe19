@@ -111,17 +111,17 @@ public class SongsWebServiceTest extends JerseyTest {
 //	    }
 
    
-	    @Test
-		public void getAllSongs_OK_ShouldReturn200() {
-	    	
-	    	Response response = target("/songs").request().header("Authorization", tk).header("Accept", jsonHeader).get();
-			assertEquals("should return status 200", Response.Status.OK.getStatusCode(), response.getStatus());
-			assertNotNull("Should return song list as json", response.getEntity().toString());
-			
-			//System.out.println(response.toString());
-			//System.out.println(response.getStatus());
-			//System.out.println(response.readEntity(String.class));
-	    }
+//	    @Test
+//		public void getAllSongs_OK_ShouldReturn200() {
+//	    	
+//	    	Response response = target("/songs/").request().header("Authorization", tk).header("Accept", jsonHeader).get();
+//			assertEquals("should return status 200", Response.Status.OK.getStatusCode(), response.getStatus());
+//			assertNotNull("Should return song list as json", response.getEntity().toString());
+//			
+//			//System.out.println(response.toString());
+//			//System.out.println(response.getStatus());
+//			//System.out.println(response.readEntity(String.class));
+//	    }
 
    
 //	    @Test

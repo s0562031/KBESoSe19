@@ -67,7 +67,8 @@ public class UsersDBDAO implements IUsersDAO {
 	public boolean validateToken(String token) {
 	
 		EntityManager em = factory.createEntityManager();
-		String gettoken = "";
+		String gettoken = "thisisnotatoken";
+		
 		
 		try {
             em.getTransaction().begin();

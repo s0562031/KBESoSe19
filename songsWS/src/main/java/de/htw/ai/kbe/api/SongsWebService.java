@@ -78,6 +78,7 @@ public class SongsWebService {
 		String authtoken = "thisisnotatoken";
 		if(headers.getRequestHeader("Authorization") != null) {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
+			//if(authtoken.equals("")) return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
 		
 		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
