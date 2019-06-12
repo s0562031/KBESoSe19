@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "songs")
 public class SongList {
 	
-	//@XmlElement(name = "song")
+	@XmlElement(name = "song")
 	private List<Songs> songs;
 	
 
@@ -23,7 +23,7 @@ public class SongList {
         this.songs = songs;
     }
  
-    @XmlAnyElement(lax=true)
+   //@XmlAnyElement(lax=true)
     public List<Songs> getSongs() {
         return songs;
     }

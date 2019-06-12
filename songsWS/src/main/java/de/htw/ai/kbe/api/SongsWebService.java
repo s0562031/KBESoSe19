@@ -209,7 +209,7 @@ public class SongsWebService {
 	@Path("/{id}")
     public Response updateSong(@PathParam("id") Integer id, Songs song, @Context HttpHeaders headers) {
 		
-		String authtoken = "";
+		String authtoken = "thisisnotatoken";
 	 	if(headers.getRequestHeader("Authorization") != null) {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
