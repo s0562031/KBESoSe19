@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "songs")
 public class SongList {
 	
-	@XmlElement(name = "song")
+	//@XmlElement(name = "song")
 	private List<Songs> songs;
 	
 

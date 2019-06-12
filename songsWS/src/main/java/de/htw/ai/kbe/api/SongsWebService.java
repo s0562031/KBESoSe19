@@ -195,6 +195,8 @@ public class SongsWebService {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
 		
+		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
+
 		
 	     Integer newId = sDAO.addSong(song);
 	     UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
@@ -212,7 +214,9 @@ public class SongsWebService {
 			authtoken = headers.getRequestHeader("Authorization").get(0);
 		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
 		
-		
+		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
+
+	 	
 		if ((sDAO.updateSong(song, id))){
             return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " updated.").build();
         }

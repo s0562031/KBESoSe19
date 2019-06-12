@@ -24,13 +24,14 @@ import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.storage.ISongsDAO;
 import de.htw.ai.kbe.storage.IUsersDAO;
 import de.htw.ai.kbe.storage.InMemorySongsDB;
+import de.htw.ai.kbe.storage.InMemoryUserlistDB;
 import de.htw.ai.kbe.storage.SongsDBDAO;
 import de.htw.ai.kbe.storage.UsersDBDAO;
 
 
 public class SongsWebServiceTest extends JerseyTest {
 	
-	    private String tk = "MzIxZHdzc2Fw";
+	    private String tk = "MzIxZHdzc2Fw=";
 	    private String jsonHeader = "application/json";
 	    private String xmlHeader = "application/xml";
 	    private String plainHeader = "text/plain";
@@ -42,7 +43,7 @@ public class SongsWebServiceTest extends JerseyTest {
 	            protected void configure() {
 	            	bind(Persistence.createEntityManagerFactory("songDB-PU")).to(EntityManagerFactory.class);
 	                bind(InMemorySongsDB.class).to(ISongsDAO.class).in(Singleton.class);
-	                bind(UsersDBDAO.class).to(IUsersDAO.class);
+	                bind(InMemoryUserlistDB.class).to(IUsersDAO.class);
 	            }
 	        });
 	    }
