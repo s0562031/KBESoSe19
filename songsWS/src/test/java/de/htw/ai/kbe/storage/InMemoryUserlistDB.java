@@ -70,16 +70,18 @@ public class InMemoryUserlistDB implements IUsersDAO {
 	@Override
 	public boolean validateToken(String authtoken) {
 		
-		 Iterator it = userStorage.entrySet().iterator();
-		    while (it.hasNext()) {
-		        Map.Entry pair = (Map.Entry)it.next();
-		        System.out.println(pair.getKey() + " = " + pair.getValue());
-		        Userlist curruser = (Userlist) pair.getValue();
-		        if(curruser.getToken().equals(authtoken)) return true;
-		        it.remove(); // avoids a ConcurrentModificationException
-		    }
-		    
-		    return false;
+		return true;
+		
+//		 Iterator it = userStorage.entrySet().iterator();
+//		    while (it.hasNext()) {
+//		        Map.Entry pair = (Map.Entry)it.next();
+//		        System.out.println(pair.getKey() + " = " + pair.getValue());
+//		        Userlist curruser = (Userlist) pair.getValue();
+//		        if(curruser.getToken().equals(authtoken)) return true;
+//		        it.remove(); // avoids a ConcurrentModificationException
+//		    }
+//		    
+//		    return false;
 		
 	}
 

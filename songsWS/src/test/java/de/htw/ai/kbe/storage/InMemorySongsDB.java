@@ -137,6 +137,7 @@ public class InMemorySongsDB implements ISongsDAO {
 		if(songStorage.get(id) != null) {
 			
 			Songs songToUpdate = songStorage.get(id);
+			songToUpdate.setArtist(updatesong.getArtist());
 			songToUpdate.setAlbum(updatesong.getAlbum());
 			songToUpdate.setRelease(updatesong.getRelease());
 			songToUpdate.setTitle(updatesong.getTitle());			
@@ -148,8 +149,7 @@ public class InMemorySongsDB implements ISongsDAO {
 	@Override
 	public boolean deleteSong(int id) {
 		songStorage.remove(id);
-		if(songStorage.get(id) == null) return true;
-		else return false;
+		return true;
 	}
 
 
