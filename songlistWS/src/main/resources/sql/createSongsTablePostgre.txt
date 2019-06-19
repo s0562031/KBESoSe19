@@ -1,0 +1,25 @@
+CREATE TABLE songs (
+    "id" SERIAL PRIMARY KEY,
+    "title" character varying(128),
+    "artist" character varying(128),
+    "album" character varying(128),
+    "release" integer
+);
+CREATE TABLE userlist (
+    "userid" character varying(128) PRIMARY KEY,
+    "password" character varying(128),
+    "firstname" character varying(128),
+    "lastname" character varying(128),
+    "token" character varying(128)
+);
+CREATE TABLE songlist (
+	id SERIAL PRIMARY KEY,
+	owner VARCHAR(128) REFERENCES userlist ON DELETE CASCADE,
+	name VARCHAR(128),
+	isprivate BOOLEAN
+);
+CREATE TABLE songlist_songs (
+	songlist_id INTEGER REFERENCES songlist ON DELETE CASCADE,
+	songs_id INTEGER REFERENCES songs ON DELETE CASCADE,
+	PRIMARY KEY(songlist_id,songs_id)
+)

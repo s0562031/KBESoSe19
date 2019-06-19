@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+	<!-- name wie in App.java -->
+    <persistence-unit name="songDB-PU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        
+        <class>de.htw.ai.kbe.data.Songs</class>
+        <class>de.htw.ai.kbe.data.Userlist</class>
+        <class>de.htw.ai.kbe.data.SongList</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+            
+<!--              <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://db.f4.htw-berlin.de:5432/_s0562031__songsdb"/>
+            <property name="javax.persistence.jdbc.user" value="_s0562031__songsdb_generic "/>
+            <property name="javax.persistence.jdbc.password" value="dbuserpw"/> -->
+            
+<!--             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/uni"/>
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="123456789"/> -->
+            
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/songsdb"/>
+            <property name="javax.persistence.jdbc.user" value="postgres"/>
+            <property name="javax.persistence.jdbc.password" value="dbuserpw"/>
+
+            <!--Hibernate properties-->
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+       
+       		 <!-- The connection is released after each statement execution 
+              	  and reacquired prior to running the next statement.  -->
+            <property name="hibernate.connection.release_mode" value="after_statement"></property>
+            
+            <!-- Connection pool properties -->
+            <property name="hibernate.c3p0.min_size" value="1"/>
+            <property name="hibernate.c3p0.max_size" value="8"/>
+            
+            <!-- in seconds:  When an idle connection is removed from the pool
+                 Hibernate default: 0, never expire. -->
+            <property name="hibernate.c3p0.timeout" value="1800"/> 
+            
+            <!--  Number of prepared statements that will be cached. 
+                  Hibernate default: 0 , caching is disable. -->
+            <property name="hibernate.c3p0.max_statements" value="50"/>
+       	
+        </properties>
+    </persistence-unit>
+</persistence>
