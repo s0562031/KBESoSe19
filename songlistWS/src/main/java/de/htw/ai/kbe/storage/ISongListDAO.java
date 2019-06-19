@@ -7,8 +7,8 @@ import de.htw.ai.kbe.data.Userlist;
 
 public interface ISongListDAO {
 	
-	public List<SongList> getAllOwnedSongLists();
-	public List<SongList> getAllForeignSongLists();
-	public Userlist getUserFromToken(String token);
+	public List<SongList> getAllOwnedSongLists(String userid);
+	public List<SongList> getAllForeignSongLists(String userid);
+	public String getUserFromToken(String token);
 
 }

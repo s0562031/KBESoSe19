@@ -11,6 +11,7 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import javax.xml.bind.JAXBException;
 
+import de.htw.ai.kbe.data.SongList;
 import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.data.Userlist;
 import de.htw.ai.kbe.storage.InMemorySongsDAO;
@@ -78,6 +79,10 @@ public class App {
             }
             
             for(Userlist u : inmemsongs.getAllUsers()) {
+            	em.persist(u);
+            }
+            
+            for(SongList u : inmemsongs.getAllSongListsAsCollection()) {
             	em.persist(u);
             }
 

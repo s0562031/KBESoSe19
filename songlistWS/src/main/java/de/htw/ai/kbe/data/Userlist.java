@@ -1,36 +1,34 @@
 package de.htw.ai.kbe.data;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import de.htw.ai.kbe.data.Songs.Builder;
 
-// Klasse heisst wie Tabelle, sonst @Table(name="user") falls user kleingeschrieben
 @Entity
-@Table(name="userlist") //postgre does not allow "user"
+@Table(name="userlist") 
 public class Userlist {
 
-    // kennzeichnet das Identitätsattribut entspricht dem PK (primary key)
-    // bedeutet, dass der PK automatisch durch die DB vergeben wird
-    // DB hat selbstinkrementelle 
-//    @Column(name="userid") 
-//    @Id 
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
 	@Column(name="userid")
 	@Id
     private String userid;
-
     private String firstName;
-
-    private String lastName;
-    
-    private String password;
-    
+    private String lastName;    
+    private String password;    
     private String token;
+    
+    @OneToMany(mappedBy="owner", cascade =CascadeType.ALL, orphanRemoval=true)
+    private List<SongList> songlists;
 
     // noetig
     public Userlist() {

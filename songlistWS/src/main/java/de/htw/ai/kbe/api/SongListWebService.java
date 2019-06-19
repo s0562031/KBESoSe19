@@ -47,21 +47,24 @@ public class SongListWebService {
     
     @GET 
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
-	public Response getAllSongs(@QueryParam ("id") Integer id, @Context HttpHeaders headers) {
+	public Response getAllSongLists(@QueryParam ("userId") String id, @Context HttpHeaders headers) {
 		
     	String usertoken = null;
     	String dbresponse = null;
     	List<SongList> responseSong = null;
     	
+    	// # validate params
+    	if(id == null || id.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("Please provide an userid.").header("Content-Type", "application/json").build();
     	if(validateToken(headers) == null) return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
     	else usertoken = validateToken(headers);
     	
-    	Userlist user = slDAO.getUserFromToken(usertoken);
-    			
+    	// # get user from token to check if he/she wants her/his own songlists or others
+    	String userid = slDAO.getUserFromToken(usertoken);
+    	if(userid.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("No user found for this token.").header("Content-Type", "application/json").build();	
 				
 		// if id is usern own id
-    	if(user.getUserid().equals(id))	responseSong = slDAO.getAllOwnedSongLists();
-    	else responseSong = slDAO.getAllForeignSongLists();
+    	if(userid.equals(id))	responseSong = slDAO.getAllOwnedSongLists(id);
+    	else responseSong = slDAO.getAllForeignSongLists(id);
 
 		
 		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("ID not found").build();

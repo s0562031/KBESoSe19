@@ -2,10 +2,16 @@ package de.htw.ai.kbe.data;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -20,10 +26,20 @@ public class SongList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
     
+    @ManyToOne
+    @JoinColumn(name="owner")
 	private Userlist owner;
+    
+    
 	private Boolean isprivate;
 	private String name;
 	
+	@ManyToMany(cascade=CascadeType.PERSIST)
+	@JoinTable(
+			name="songlist_songs",
+			joinColumns = {@JoinColumn(name="songs_id", referencedColumnName ="id")},
+			inverseJoinColumns = {@JoinColumn(name="songlist_id", referencedColumnName = "id")}
+	)
 	private List<Songs> songlist;
 	
 	public SongList(Builder build) {

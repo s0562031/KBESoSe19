@@ -23,6 +23,7 @@ public class InMemorySongsDAO implements ISongsDAO {
     private InMemorySongsDAO () {
     	songStorage = new ConcurrentHashMap<Integer,Songs>();
     	userStorage = new ConcurrentHashMap<Integer,Userlist>();
+    	songlistStorage = new ConcurrentHashMap<Integer,SongList>();
         initSomeSongs();
         initSomeUsers();
         initSomeSongLists();
@@ -134,6 +135,16 @@ public class InMemorySongsDAO implements ISongsDAO {
     	myfirstcontent.add(songStorage.get(2));
     	
     	SongList myfirstsonglist = new SongList.Builder(userStorage.get(1), true, myfirstcontent).build();
+    	songlistStorage.put(1, myfirstsonglist);
+    	
+    	
+    	List<Songs> mysecondcontent = new LinkedList<Songs>();
+    	myfirstcontent.add(songStorage.get(3));
+    	myfirstcontent.add(songStorage.get(4));
+    	myfirstcontent.add(songStorage.get(6));
+    	
+    	SongList mysecongsonglist = new SongList.Builder(userStorage.get(1), false, mysecondcontent).build();
+    	songlistStorage.put(2, mysecongsonglist);
     	
     }
 
@@ -149,6 +160,14 @@ public class InMemorySongsDAO implements ISongsDAO {
     
     public Collection<Songs> getAllSongsAsCollection() {
     	return songStorage.values();
+    }
+    
+    public List<SongList> getAllSongLists() {
+    	return (List<SongList>) songlistStorage.values();
+    }
+    
+    public Collection<SongList> getAllSongListsAsCollection() {
+    	return songlistStorage.values();
     }
 
 
