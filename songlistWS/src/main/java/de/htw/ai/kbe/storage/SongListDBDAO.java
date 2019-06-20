@@ -47,13 +47,48 @@ public class SongListDBDAO implements ISongListDAO{
             //factory.close();
         }
 		
+		for(int i=0; i<foundsonglists.size(); i++) {
+			foundsonglists.get(i).getOwner().setPassword("");
+			foundsonglists.get(i).getOwner().setToken("");
+		}
+		
 		return foundsonglists;
 	}
 
 	@Override
 	public List<SongList> getAllForeignSongLists(String owner) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		EntityManager em = factory.createEntityManager();	
+		List<SongList> foundsonglists = null;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("SELECT s FROM SongList s WHERE s.owner = '" + owner + "' AND s.isprivate = '" + false + "'", SongList.class);
+            foundsonglists = q.getResultList();
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        	em.getTransaction().rollback();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
+		
+		for(int i=0; i<foundsonglists.size(); i++) {
+			foundsonglists.get(i).getOwner().setPassword("");
+			foundsonglists.get(i).getOwner().setToken("");
+		}
+		
+		return foundsonglists;
+		
 	}
 
 	public String getUserFromToken(String token) {

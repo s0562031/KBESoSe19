@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +35,7 @@ public class SongList {
 	private Boolean isprivate;
 	private String name;
 	
-	@ManyToMany(cascade=CascadeType.PERSIST)
+	@ManyToMany(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinTable(
 			name="songlist_songs",
 			joinColumns = {@JoinColumn(name="songs_id", referencedColumnName ="id")},
