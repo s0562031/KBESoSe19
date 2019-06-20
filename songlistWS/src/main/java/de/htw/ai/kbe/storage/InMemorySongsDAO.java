@@ -146,6 +146,22 @@ public class InMemorySongsDAO implements ISongsDAO {
     	SongList mysecongsonglist = new SongList.Builder(userStorage.get(1), false, mysecondcontent).build();
     	songlistStorage.put(2, mysecongsonglist);
     	
+    	
+    	List<Songs> mythirdontent = new LinkedList<Songs>();
+    	myfirstcontent.add(songStorage.get(6));
+    	myfirstcontent.add(songStorage.get(7));
+    	myfirstcontent.add(songStorage.get(7));
+    	
+    	SongList mythirdsonglist = new SongList.Builder(userStorage.get(2), true, mythirdontent).build();
+    	songlistStorage.put(2, mythirdsonglist);
+    	
+    	List<Songs> myfourthcontent = new LinkedList<Songs>();
+    	myfirstcontent.add(songStorage.get(3));
+    	myfirstcontent.add(songStorage.get(4));
+    	myfirstcontent.add(songStorage.get(6));
+    	
+    	SongList myfourthsonglist = new SongList.Builder(userStorage.get(2), false, myfourthcontent).name("This even got a name").build();
+    	songlistStorage.put(2, myfourthsonglist);
     }
 
 	@Override
