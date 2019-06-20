@@ -139,29 +139,29 @@ public class InMemorySongsDAO implements ISongsDAO {
     	
     	
     	List<Songs> mysecondcontent = new LinkedList<Songs>();
-    	myfirstcontent.add(songStorage.get(3));
-    	myfirstcontent.add(songStorage.get(4));
-    	myfirstcontent.add(songStorage.get(6));
+    	mysecondcontent.add(songStorage.get(3));
+    	mysecondcontent.add(songStorage.get(4));
+    	mysecondcontent.add(songStorage.get(6));
     	
-    	SongList mysecongsonglist = new SongList.Builder(userStorage.get(1), false, mysecondcontent).build();
-    	songlistStorage.put(2, mysecongsonglist);
+    	SongList mysecondsonglist = new SongList.Builder(userStorage.get(2), false, mysecondcontent).build();
+    	songlistStorage.put(2, mysecondsonglist);
     	
     	
     	List<Songs> mythirdontent = new LinkedList<Songs>();
-    	myfirstcontent.add(songStorage.get(6));
-    	myfirstcontent.add(songStorage.get(7));
-    	myfirstcontent.add(songStorage.get(7));
+    	mythirdontent.add(songStorage.get(6));
+    	mythirdontent.add(songStorage.get(7));
+    	mythirdontent.add(songStorage.get(8));
     	
-    	SongList mythirdsonglist = new SongList.Builder(userStorage.get(2), true, mythirdontent).build();
-    	songlistStorage.put(2, mythirdsonglist);
+    	SongList mythirdsonglist = new SongList.Builder(userStorage.get(1), true, mythirdontent).build();
+    	songlistStorage.put(3, mythirdsonglist);
     	
     	List<Songs> myfourthcontent = new LinkedList<Songs>();
-    	myfirstcontent.add(songStorage.get(3));
-    	myfirstcontent.add(songStorage.get(4));
-    	myfirstcontent.add(songStorage.get(6));
+    	myfourthcontent.add(songStorage.get(3));
+    	myfourthcontent.add(songStorage.get(4));
+    	myfourthcontent.add(songStorage.get(6));
     	
     	SongList myfourthsonglist = new SongList.Builder(userStorage.get(2), false, myfourthcontent).name("This even got a name").build();
-    	songlistStorage.put(2, myfourthsonglist);
+    	songlistStorage.put(4, myfourthsonglist);
     }
 
 	@Override

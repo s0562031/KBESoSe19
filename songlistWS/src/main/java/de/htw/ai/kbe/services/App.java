@@ -48,6 +48,8 @@ public class App {
         	
         }
         
+        System.out.println(inmemsongs.getAllSongListsAsCollection().size());
+        
 //        try {
 //            em.getTransaction().begin();
 //            
@@ -82,8 +84,8 @@ public class App {
             	em.persist(u);
             }
             
-            for(SongList u : inmemsongs.getAllSongListsAsCollection()) {
-            	em.persist(u);
+            for(SongList sl : inmemsongs.getAllSongListsAsCollection()) {
+            	em.persist(sl);
             }
 
             // commit transaction

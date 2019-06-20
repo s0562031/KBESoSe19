@@ -35,11 +35,11 @@ public class SongList {
 	private Boolean isprivate;
 	private String name;
 	
-	@ManyToMany(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
+	@ManyToMany(cascade=CascadeType.PERSIST)
 	@JoinTable(
 			name="songlist_songs",
-			joinColumns = {@JoinColumn(name="songs_id", referencedColumnName ="id")},
-			inverseJoinColumns = {@JoinColumn(name="songlist_id", referencedColumnName = "id")}
+			joinColumns = {@JoinColumn(name="songlist_id", referencedColumnName ="id")},
+			inverseJoinColumns = {@JoinColumn(name="songs_id", referencedColumnName = "id")}
 	)
 	private List<Songs> songlist;
 	

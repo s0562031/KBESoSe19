@@ -23,3 +23,10 @@ CREATE TABLE songlist_songs (
 	songs_id INTEGER REFERENCES songs ON DELETE CASCADE,
 	PRIMARY KEY(songlist_id,songs_id)
 )
+
+DELETE FROM songs;
+DELETE FROM userlist;
+DELETE FROM songlist;
+
+ALTER SEQUENCE songs_id_seq RESTART WITH 1;
+ALTER SEQUENCE songlist_id_seq RESTART WITH 1;
