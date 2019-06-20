@@ -7,10 +7,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 	
-@XmlRootElement(name = "songlist")
+@XmlRootElement(name = "songlists")
 public class SongListWrapper {
 	
-	@XmlElement(name = "song")
+	@XmlElement(name = "songlist")
 	private List<SongList> songlist;
 	
 

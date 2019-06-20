@@ -7,6 +7,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -44,6 +45,10 @@ public class SongListWebService {
     	this.slDAO = sDAO;
     	this.uDAO = uDAO;
     }
+    
+    /*
+     * TODO: getUserFromToken ersetzen mit validateToken!!
+     */
     
     @GET 
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
@@ -102,6 +107,68 @@ public class SongListWebService {
 		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
 	}
     
+    
+    
+    @GET 
+    @Path("/{id}")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
+	public Response getSong(@PathParam ("id") Integer songlistid, @Context HttpHeaders headers) {
+		
+    	return null;
+//    	String usertoken = null;
+//    	String dbresponse = null;
+//    	SongList responseSong = null;
+//    	
+//    	// # validate params
+//    	if(songlistid == null) return Response.status(Response.Status.NOT_FOUND).entity("Please provide a songlistid.").header("Content-Type", "application/json").build();
+//    	if(validateToken(headers) == null) return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+//    	else usertoken = validateToken(headers);
+//    	
+//    	// # get user from token to check if he/she wants her/his own songlists or others
+//    	String userid = slDAO.getUserFromToken(usertoken);
+//    	if(userid.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("No user found for this token.").header("Content-Type", "application/json").build();	
+//				
+//		// if id is usern own id
+//    	if(userid.equals(id))	responseSong = slDAO.getOwnedSongLists(id, songlistid);
+//    	else responseSong = slDAO.getForeignSongLists(id, songlistid);
+//
+//		
+//		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("No entry found").build();
+//		
+//		
+//		// ## build awnser
+//		List<MediaType> acceptableTypes = headers.getAcceptableMediaTypes();	
+//		
+//		// JSON is standard, if no or both types are given use it
+//		if(acceptableTypes.contains(MediaType.WILDCARD_TYPE)) acceptableTypes.add(MediaType.APPLICATION_JSON_TYPE);
+//		
+//		if(acceptableTypes.contains(MediaType.APPLICATION_JSON_TYPE)) {
+//			try {
+//				dbresponse = pojoToJSON(responseSong);
+//			} catch (JsonProcessingException e) {
+//				e.printStackTrace();
+//				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+//			} 
+//			
+//			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/json").build();
+//
+//		} 
+//		
+//		else if(acceptableTypes.contains(MediaType.APPLICATION_XML_TYPE) && !acceptableTypes.contains(MediaType.APPLICATION_JSON_TYPE)) {
+//			try {
+//				dbresponse = pojoToXML(responseSong);
+//			} catch (JAXBException e) {
+//				e.printStackTrace();
+//				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+//			} 
+//			
+//			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/xml").build();
+//		}	
+//		
+//		else return Response.status(Response.Status.BAD_REQUEST).entity("Header not accepted").build();
+//    	
+	}
+  
     private String validateToken(HttpHeaders headers) {
     	
     	String authtoken = "thisisnotatoken";
@@ -111,7 +178,8 @@ public class SongListWebService {
 			
 		if(!uDAO.validateToken(authtoken)) 	return null;
 		else return authtoken;
-		
+    	
+  		
     }
     
     

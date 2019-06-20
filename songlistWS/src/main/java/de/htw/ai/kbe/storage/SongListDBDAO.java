@@ -90,6 +90,78 @@ public class SongListDBDAO implements ISongListDAO{
 		return foundsonglists;
 		
 	}
+	
+	@Override
+	public SongList getForeignSongLists(String owner, Integer songlistid) {
+		
+		EntityManager em = factory.createEntityManager();	
+		SongList foundsonglist = null;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("SELECT s FROM SongList s WHERE s.owner = '" + owner + "' AND s.id = '" + songlistid + "'", SongList.class);
+            foundsonglist = (SongList) q.getSingleResult();
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        	em.getTransaction().rollback();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
+		
+		if(foundsonglist != null) {
+			foundsonglist.getOwner().setPassword("");
+			foundsonglist.getOwner().setToken("");
+		}
+		
+		return foundsonglist;
+	}
+
+	@Override
+	public SongList getOwnedSongLists(String owner, Integer songlistid) {
+		
+		EntityManager em = factory.createEntityManager();	
+		SongList foundsonglist = null;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("SELECT s FROM SongList s WHERE s.owner = '" + owner +
+            		"' AND s.id = '" + songlistid + "' AND s.isprivate ='" + true + "'", SongList.class);
+            foundsonglist = (SongList) q.getSingleResult();
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        	em.getTransaction().rollback();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
+		
+		if(foundsonglist != null) {
+			foundsonglist.getOwner().setPassword("");
+			foundsonglist.getOwner().setToken("");
+		}
+
+		
+		return foundsonglist;
+	}
 
 	public String getUserFromToken(String token) {
 		
@@ -119,5 +191,7 @@ public class SongListDBDAO implements ISongListDAO{
 		
 		return founduser;
 	}
+
+
 
 }
