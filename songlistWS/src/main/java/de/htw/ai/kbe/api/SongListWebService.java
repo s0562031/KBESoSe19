@@ -96,7 +96,7 @@ public class SongListWebService {
 				dbresponse = pojoListToXML(responseSong);
 			} catch (JAXBException e) {
 				e.printStackTrace();
-				return Response.status(Response.Status.BAD_REQUEST).entity("Bad ID").build();
+				return Response.status(Response.Status.BAD_REQUEST).entity("XML parsing error.").build();
 			} 
 			
 			return Response.status(Response.Status.OK).entity(dbresponse).header("Content-Type", "application/xml").build();
@@ -251,7 +251,7 @@ public class SongListWebService {
     
     private String pojoListToXML(List<SongList> songList) throws JAXBException {
     	    	
-    	JAXBContext context = JAXBContext.newInstance(SongWrapper.class);
+    	JAXBContext context = JAXBContext.newInstance(SongListWrapper.class);
     	Marshaller marshall = context.createMarshaller();
     	marshall.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE); 
     	

@@ -14,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import de.htw.ai.kbe.data.Songs.Builder;
@@ -35,6 +36,7 @@ public class SongList {
 	private Boolean isprivate;
 	private String name;
 	
+	@XmlElement(name="song")
 	@ManyToMany(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinTable(
 			name="songlist_songs",
