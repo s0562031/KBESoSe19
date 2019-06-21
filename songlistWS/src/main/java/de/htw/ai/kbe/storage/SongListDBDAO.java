@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import de.htw.ai.kbe.data.SongList;
+import de.htw.ai.kbe.data.Songs;
 import de.htw.ai.kbe.data.Userlist;
 
 public class SongListDBDAO implements ISongListDAO{
@@ -92,7 +93,7 @@ public class SongListDBDAO implements ISongListDAO{
 	}
 	
 	@Override
-	public SongList getForeignSongLists(String owner, Integer songlistid) {
+	public SongList getOwnedSongList(String owner, Integer songlistid) {
 		
 		EntityManager em = factory.createEntityManager();	
 		SongList foundsonglist = null;
@@ -127,7 +128,7 @@ public class SongListDBDAO implements ISongListDAO{
 	}
 
 	@Override
-	public SongList getOwnedSongLists(String owner, Integer songlistid) {
+	public SongList getForeignSongList(Integer songlistid) {
 		
 		EntityManager em = factory.createEntityManager();	
 		SongList foundsonglist = null;
@@ -135,8 +136,7 @@ public class SongListDBDAO implements ISongListDAO{
 		try {
             em.getTransaction().begin();
             
-            Query q = em.createQuery("SELECT s FROM SongList s WHERE s.owner = '" + owner +
-            		"' AND s.id = '" + songlistid + "' AND s.isprivate ='" + true + "'", SongList.class);
+            Query q = em.createQuery("SELECT s FROM SongList s WHERE s.id = '" + songlistid + "' AND s.isprivate ='" + false + "'", SongList.class);
             foundsonglist = (SongList) q.getSingleResult();
             em.getTransaction().commit();
 
@@ -162,7 +162,76 @@ public class SongListDBDAO implements ISongListDAO{
 		
 		return foundsonglist;
 	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public void deleteSongList(Integer songlistid) {
+		
+		EntityManager em = factory.createEntityManager();	
+		
+		try {
+            
+            SongList songlist;			
+            songlist = em.find(SongList.class, songlistid);
+			
+            if (songlist != null) {
+				
+            	em.getTransaction().begin();
+	            em.remove(songlist);
+	            em.getTransaction().commit();
+            }
 
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        	em.getTransaction().rollback();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            em.close();
+        }
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String getSongListOwner(Integer songlistid) {
+		
+		EntityManager em = factory.createEntityManager();	
+		SongList foundsonglist = null;
+		
+		try {
+            em.getTransaction().begin();
+            
+            Query q = em.createQuery("SELECT s FROM SongList s WHERE s.id = '" + songlistid + "'", SongList.class);
+            foundsonglist = (SongList) q.getSingleResult();
+            em.getTransaction().commit();
+
+        } catch (NoResultException e) {
+        	System.out.println("no result exception");
+        	e.printStackTrace();
+        	em.getTransaction().rollback();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+        } finally {
+            // EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+            // Freigabe am Ende der Applikation
+            //factory.close();
+        }
+		
+		if(foundsonglist == null) return null;
+		else return foundsonglist.getOwner().getUserid();
+	}
+
+	/**
+	 * 
+	 */
 	public String getUserFromToken(String token) {
 		
 		EntityManager em = factory.createEntityManager();	
@@ -191,7 +260,6 @@ public class SongListDBDAO implements ISongListDAO{
 		
 		return founduser;
 	}
-
 
 
 }

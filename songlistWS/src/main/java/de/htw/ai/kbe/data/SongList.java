@@ -35,7 +35,7 @@ public class SongList {
 	private Boolean isprivate;
 	private String name;
 	
-	@ManyToMany(cascade=CascadeType.PERSIST)
+	@ManyToMany(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinTable(
 			name="songlist_songs",
 			joinColumns = {@JoinColumn(name="songlist_id", referencedColumnName ="id")},
