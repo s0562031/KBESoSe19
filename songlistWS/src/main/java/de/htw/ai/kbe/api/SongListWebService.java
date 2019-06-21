@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -46,9 +47,6 @@ public class SongListWebService {
     	this.uDAO = uDAO;
     }
     
-    /*
-     * TODO: getUserFromToken ersetzen mit validateToken!!
-     */
     
     @GET 
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
@@ -171,14 +169,12 @@ public class SongListWebService {
   
 
     
-    @GET 
+    @DELETE 
     @Path("/{id}")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML  }) // JSON an erster Stelle ist default
 	public Response deleteSong(@PathParam ("id") Integer songlistid, @Context HttpHeaders headers) {
 		
     	String usertoken = null;
-    	String dbresponse = null;
-    	SongList responseSong = null;
     	
     	// # validate params
     	if(songlistid == null) return Response.status(Response.Status.NOT_FOUND).entity("Please provide a songlistid.").header("Content-Type", "application/json").build();
@@ -194,11 +190,10 @@ public class SongListWebService {
     	
     	if(songlistowner.contentEquals(userid)) {
     		slDAO.deleteSongList(songlistid);
-    		Response.status(Response.Status.OK).entity("SongList + " + songlistid + " deleted.").build();
+    		return Response.status(Response.Status.OK).entity("SongList + " + songlistid + " deleted.").build();
     	}
     	else return Response.status(Response.Status.FORBIDDEN).entity("You are not allowed to delte others playlists.").build();
 		
-    	return Response.status(Response.Status.NOT_FOUND).entity("SongList not found.").build();    	
 	}
   
     /**
