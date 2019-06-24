@@ -102,7 +102,7 @@ public class SongList {
 	}
 	
 	public void setSongList(List<Songs> songlist) {
-		//this.songlist = songlist;
+		this.songlist = songlist;
 	}
 	
 
