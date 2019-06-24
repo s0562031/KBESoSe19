@@ -5,8 +5,10 @@ import java.io.StringWriter;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -15,6 +17,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -124,14 +128,18 @@ public class SongListWebService {
     	// # compare user from token to owner of songlist
     	String userid = slDAO.getUserFromToken(usertoken);
     	if(userid.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("No user found for this token.").header("Content-Type", "application/json").build();	
-				
-		// if id is usern own id
+			
+    	// check if songlist exists 
+    	
+    	// if id is users own id
     	String songlistowner = slDAO.getSongListOwner(songlistid);
+    	
+    	if(songlistowner == null) return Response.status(Response.Status.NOT_FOUND).entity("No songlist found for this id.").header("Content-Type", "application/json").build();
+    	
     	if(songlistowner.contentEquals(userid))responseSong = slDAO.getOwnedSongList(userid, songlistid);
     	else responseSong = slDAO.getForeignSongList(songlistid);
-
 		
-		if(responseSong == null) return Response.status(Response.Status.NOT_FOUND).entity("No entry found").build();
+		if(responseSong == null) return Response.status(Response.Status.FORBIDDEN).entity("This songlist is not public.").build();
 		
 		
 		// ## build awnser
@@ -167,7 +175,35 @@ public class SongListWebService {
     	
 	}
   
-
+//  POST http://localhost:8080/songsWS/rest/songs with song in payload
+//  Status Code 201 und URI fuer den neuen Eintrag im http-header 'Location' zurueckschicken, also:
+//  Location: /songsWS/rest/songs/neueID
+	@Context 
+	UriInfo uriInfo;
+	
+	@POST
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response createSongList(SongList songlist, @Context HttpHeaders headers) {
+		
+		String authtoken = "thisisnotatoken";
+	 	if(headers.getRequestHeader("Authorization") != null) {
+			authtoken = headers.getRequestHeader("Authorization").get(0);
+		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+		
+		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
+		
+		// owner wird nicht übergeben
+		Userlist user = uDAO.getUserByToken(authtoken);
+		songlist.setOwner(user);
+		
+	    Integer newId = slDAO.createSongList(songlist);
+		
+	    UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
+	    uriBuilder.path(Integer.toString(newId));
+		
+	    return Response.created(uriBuilder.build()).entity("").build();
+	}
     
     @DELETE 
     @Path("/{id}")

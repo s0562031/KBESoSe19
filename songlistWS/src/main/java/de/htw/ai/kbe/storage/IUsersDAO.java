@@ -7,6 +7,7 @@ import de.htw.ai.kbe.data.Userlist;
 public interface IUsersDAO {
 	
 	public Userlist getUserByID(String id);
+	public Userlist getUserByToken(String token);
 	public List<Userlist> getAllUsers();
 	public void saveUser();
 	public void deleteCUser();

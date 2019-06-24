@@ -89,6 +89,21 @@ public class SongList {
 		this.songlist = songlist;
 	}
 	
+	public void setPrivate(Boolean isPrivate) {
+		this.isprivate = isPrivate;
+	}	
+	
+	public void setName(String name) {
+		this.name = name;
+	}	
+	
+	public void setOwner(Userlist owner) {
+		this.owner = owner;
+	}
+	
+	public void setSongList(List<Songs> songlist) {
+		//this.songlist = songlist;
+	}
 	
 
 	public static class Builder {

@@ -50,6 +50,29 @@ public class UsersDBDAO implements IUsersDAO {
 		return user;
 	}
 	
+	@Override
+	public Userlist getUserByToken(String token) {
+		
+		EntityManager em = factory.createEntityManager();
+		Userlist user = null;
+	
+		try {
+            user = em.find(Userlist.class, token);
+
+        } catch (Exception ex) {
+        	
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+            
+        } finally {
+        	// EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+
+        }
+		
+		return user;
+	}
+	
 //	@Override
 //	public boolean validateUser(String id, String pw) {
 //		

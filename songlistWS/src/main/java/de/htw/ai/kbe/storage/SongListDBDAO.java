@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 
 import de.htw.ai.kbe.data.SongList;
@@ -20,7 +21,7 @@ public class SongListDBDAO implements ISongListDAO{
     public SongListDBDAO(EntityManagerFactory emf) {
         this.factory = emf;
     }
-
+    
     @Override
 	public List<SongList> getAllOwnedSongLists(String owner) {
 		
@@ -260,6 +261,28 @@ public class SongListDBDAO implements ISongListDAO{
 		
 		return founduser;
 	}
-
+	
+	@Override
+	public Integer createSongList(SongList newsonglist) throws PersistenceException {
+		
+		EntityManager em = factory.createEntityManager();	
+		
+		try {
+			em.getTransaction().begin(); 
+            em.persist(newsonglist);
+            em.getTransaction().commit();
+            return newsonglist.getId();
+           
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            em.getTransaction().rollback();
+            throw new PersistenceException("Error persisting entity: " + ex.toString());
+            
+        } finally {
+        	
+        	// EntityManager nach Datenbankaktionen wieder freigeben
+            em.close();
+        }
+	}
 
 }
