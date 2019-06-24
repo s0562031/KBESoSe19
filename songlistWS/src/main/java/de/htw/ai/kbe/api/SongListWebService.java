@@ -194,8 +194,11 @@ public class SongListWebService {
 		if(!uDAO.validateToken(authtoken)) 	return Response.status(Response.Status.NOT_FOUND).entity("This token is invalid.").header("Content-Type", "application/json").build();
 		
 		// owner wird nicht übergeben
-		Userlist user = uDAO.getUserByToken(authtoken);
-		songlist.setOwner(user);
+		
+		//Userlist usr = uDAO.getUserByToken(authtoken);
+		
+		Userlist usr = uDAO.getUserByID("mmuster");
+		songlist.setOwner(usr);
 		
 	    Integer newId = slDAO.createSongList(songlist);
 		
