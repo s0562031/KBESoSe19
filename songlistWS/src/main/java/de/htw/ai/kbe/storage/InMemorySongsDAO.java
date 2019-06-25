@@ -152,7 +152,7 @@ public class InMemorySongsDAO implements ISongsDAO {
     	mythirdontent.add(songStorage.get(7));
     	mythirdontent.add(songStorage.get(8));
     	
-    	SongList mythirdsonglist = new SongList.Builder(userStorage.get(1), true, mythirdontent).build();
+    	SongList mythirdsonglist = new SongList.Builder(userStorage.get(1), false, mythirdontent).build();
     	songlistStorage.put(3, mythirdsonglist);
     	
     	List<Songs> myfourthcontent = new LinkedList<Songs>();
@@ -160,7 +160,7 @@ public class InMemorySongsDAO implements ISongsDAO {
     	myfourthcontent.add(songStorage.get(4));
     	myfourthcontent.add(songStorage.get(6));
     	
-    	SongList myfourthsonglist = new SongList.Builder(userStorage.get(2), false, myfourthcontent).name("This even got a name").build();
+    	SongList myfourthsonglist = new SongList.Builder(userStorage.get(2), true, myfourthcontent).name("This even got a name").build();
     	songlistStorage.put(4, myfourthsonglist);
     }
 

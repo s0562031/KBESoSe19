@@ -22,7 +22,7 @@ CREATE TABLE songlist_songs (
 	songlist_id INTEGER REFERENCES songlist ON DELETE CASCADE,
 	songs_id INTEGER REFERENCES songs ON DELETE CASCADE,
 	PRIMARY KEY(songlist_id,songs_id)
-)
+);
 
 DELETE FROM songs;
 DELETE FROM userlist;
