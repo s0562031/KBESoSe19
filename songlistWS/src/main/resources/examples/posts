@@ -1,0 +1,37 @@
+<songlist>
+ <name>This is a new XML playlist</name>
+    <owner>
+        <firstName>Maxime</firstName>
+        <lastName>Muster</lastName>
+        <password></password>
+        <token></token>
+        <userid>mmuster</userid>
+    </owner>
+	<song>
+        <id>1</id>
+    </song>
+    <song>
+        <id>2</id>
+    </song>
+</songlist>
+
+
+{
+    "owner": {
+        "userid": "mmuster",
+        "firstName": "Maxime",
+        "lastName": "Muster",
+        "password": "",
+        "token": ""
+    },
+    "isprivate": false,
+    "name": "This is my JSON POST playlist",
+    "songList": [
+        {
+            "id": 1
+        },
+        {
+            "id": 2
+        }
+    ]
+}

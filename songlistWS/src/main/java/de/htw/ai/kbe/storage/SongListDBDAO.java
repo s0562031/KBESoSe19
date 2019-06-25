@@ -5,9 +5,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
+
+import org.hibernate.Session;
 
 import de.htw.ai.kbe.data.SongList;
 import de.htw.ai.kbe.data.Songs;
@@ -265,24 +268,28 @@ public class SongListDBDAO implements ISongListDAO{
 	@Override
 	public Integer createSongList(SongList newsonglist) throws PersistenceException {
 		
-		EntityManager em = factory.createEntityManager();	
+		EntityManager em = factory.createEntityManager();
+		Integer newsonglistid = null;
+
 		
 		try {
 			em.getTransaction().begin(); 
-            em.persist(newsonglist);
+            SongList mergedlist = em.merge(newsonglist);
             em.getTransaction().commit();
-            return newsonglist.getId();
+            newsonglistid = mergedlist.getId();
            
         } catch (Exception ex) {
             ex.printStackTrace();
             em.getTransaction().rollback();
-            throw new PersistenceException("Error persisting entity: " + ex.toString());
+            //throw new PersistenceException("Error persisting entity: " + ex.toString());
             
         } finally {
         	
         	// EntityManager nach Datenbankaktionen wieder freigeben
             em.close();
         }
+		
+		return newsonglistid;
 	}
 
 }

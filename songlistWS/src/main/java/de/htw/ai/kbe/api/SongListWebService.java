@@ -195,12 +195,13 @@ public class SongListWebService {
 		
 		// owner wird nicht übergeben
 		
-		//Userlist usr = uDAO.getUserByToken(authtoken);
-		
-		Userlist usr = uDAO.getUserByID("mmuster");
-		songlist.setOwner(usr);
+//		Userlist usr = uDAO.getUserByToken(authtoken);		
+//		Userlist usr = uDAO.getUserByID("mmuster");
+//		songlist.setOwner(usr);
 		
 	    Integer newId = slDAO.createSongList(songlist);
+	    
+	    if(newId == null) return Response.status(Response.Status.NOT_FOUND).entity("Could not create playlist. Please check input.").header("Content-Type", "application/json").build();
 		
 	    UriBuilder uriBuilder = uriInfo.getAbsolutePathBuilder();
 	    uriBuilder.path(Integer.toString(newId));
