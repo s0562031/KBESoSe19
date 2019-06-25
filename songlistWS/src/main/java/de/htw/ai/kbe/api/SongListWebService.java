@@ -223,14 +223,16 @@ public class SongListWebService {
     	
     	// # compare user from token to owner of songlist
     	String userid = slDAO.getUserFromToken(usertoken);
-    	if(userid.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("No user found for this token.").header("Content-Type", "application/json").build();	
+    	if(userid == null || userid.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("No user found for this token.").header("Content-Type", "application/json").build();	
 				
-		// if id is usern own id
-    	String songlistowner = slDAO.getSongListOwner(songlistid);
+		// get songlist owner
+    	String songlistowner = slDAO.getSongListOwner(songlistid);    	
+    	if(songlistowner == null || songlistowner.isEmpty()) return Response.status(Response.Status.NOT_FOUND).entity("There is no songlist with id: " + songlistid + ".").header("Content-Type", "application/json").build();	
     	
+    	// if its his/her playlist delete if not 403
     	if(songlistowner.contentEquals(userid)) {
     		slDAO.deleteSongList(songlistid);
-    		return Response.status(Response.Status.OK).entity("SongList + " + songlistid + " deleted.").build();
+    		return Response.status(Response.Status.OK).entity("SongList " + songlistid + " deleted.").build();
     	}
     	else return Response.status(Response.Status.FORBIDDEN).entity("You are not allowed to delte others playlists.").build();
 		
