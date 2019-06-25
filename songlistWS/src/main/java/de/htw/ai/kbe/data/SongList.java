@@ -12,12 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import de.htw.ai.kbe.data.Songs.Builder;
+
 
 @Entity
 @XmlRootElement(name = "songlist")
@@ -32,11 +32,11 @@ public class SongList {
     @JoinColumn(name="owner")
 	private Userlist owner;
     
-    
+    @XmlElement(name="isprivate")
 	private Boolean isprivate;
 	private String name;
 	
-	@XmlElement(name="song")
+	//@XmlElement(name="song")
 	@ManyToMany(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@JoinTable(
 			name="songlist_songs",
@@ -68,10 +68,10 @@ public class SongList {
 	public void ListOwner(Userlist owner) {
 		this.owner = owner;
 	}
-	public Boolean getIsprivate() {
+	public Boolean getisprivate() {
 		return isprivate;
 	}
-	public void ListIsprivate(Boolean isprivate) {
+	public void Listisprivate(Boolean isprivate) {
 		this.isprivate = isprivate;
 	}
 	public String getName() {
