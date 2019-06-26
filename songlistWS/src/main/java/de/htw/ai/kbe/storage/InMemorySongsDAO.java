@@ -42,13 +42,13 @@ public class InMemorySongsDAO implements ISongsDAO {
     
     private void initSomeUsers() {
     	
-    	Userlist myfirstuser = new Userlist.Builder("mmuster","password123")
+    	Userlist myfirstuser = new Userlist.Builder("mmuster","passwd123")
     			.firstname("Maxime")
     			.lastname("Muster")
     			.token("")
     			.build();
     	
-    	Userlist myseconduser = new Userlist.Builder("eschueler","password123")
+    	Userlist myseconduser = new Userlist.Builder("eschueler","passwd123")
     			.firstname("Elena")
     			.lastname("Schuler")
     			.token("").build();
