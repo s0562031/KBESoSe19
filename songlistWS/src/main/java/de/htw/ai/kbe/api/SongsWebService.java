@@ -229,17 +229,19 @@ public class SongsWebService {
 	@Path("/{id}")
 	public Response deleteSong(@PathParam("id") Integer id, @Context HttpHeaders headers) {
 		
-		String authtoken = "thisisnotatoken";
-	 	if(headers.getRequestHeader("Authorization") != null) {
-			authtoken = headers.getRequestHeader("Authorization").get(0);
-		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+		return Response.status(Response.Status.METHOD_NOT_ALLOWED).entity("").build();
 		
-		
-		if (sDAO.deleteSong(id)) {
-            return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();
-        }
-		
-        return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " not found.").build();
+//		String authtoken = "thisisnotatoken";
+//	 	if(headers.getRequestHeader("Authorization") != null) {
+//			authtoken = headers.getRequestHeader("Authorization").get(0);
+//		} else return Response.status(Response.Status.NOT_FOUND).entity("Please provide your authorization token.").header("Content-Type", "application/json").build();
+//		
+//		
+//		if (sDAO.deleteSong(id)) {
+//            return Response.status(Response.Status.NO_CONTENT).entity("Song " + id + " deleted.").build();
+//        }
+//		
+//        return Response.status(Response.Status.NOT_FOUND).entity("Song " + id + " not found.").build();
  	}
 	
     /**
